@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+      <RelativeLayout
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
+          <TextView
+              android:paddingLeft="10dp"
+              android:id="@+id/orderNo"
+              android:layout_alignParentLeft="true"
+              android:textColor="@color/BLAK"
+              android:gravity="center|right"
+              android:paddingRight="10dp"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              />
+          <TextView
+              android:layout_alignParentRight="true"
+              android:textColor="@color/create"
+              android:gravity="center|right"
+              android:paddingRight="10dp"
+              android:layout_width="wrap_content"
+              android:layout_height="match_parent"
+              android:text="等待买家付款"
+              />
+      </RelativeLayout>
+
+    </LinearLayout>
+    <View
+        android:background="@color/def_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp">
+
+    </View>
+
+    <LinearLayout
+        android:id="@+id/order_view"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
+    <View
+        android:background="@color/def_bg"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"/>
+    <LinearLayout
+        android:gravity="right"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="40dp">
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+            <TextView
+                android:textColor="@color/BLAK"
+                android:id="@+id/num"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="共计1件商品"
+                />
+
+            <TextView
+                android:textColor="@color/BLAK"
+                android:id="@+id/productFee"
+                android:paddingLeft="5dp"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="合计:¥19.89"
+                />
+
+            <TextView
+                android:textColor="@color/BLAK"
+                android:paddingLeft="5dp"
+                android:textSize="10sp"
+                android:gravity="center_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="(含运费¥31.9)"
+                />
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

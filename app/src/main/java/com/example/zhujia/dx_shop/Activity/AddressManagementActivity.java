@@ -68,12 +68,12 @@ public class AddressManagementActivity extends AppCompatActivity implements View
     private String iconUrl,nickNamestr,customerNamestr;
     private SharedPreferences sharedPreferences;
     private Button add_address_btn;
-    private int pageindex=1;
     JSONObject object;
     JSONObject pager;
     boolean hasMoreData;
     private Handler mHandler;
     private List<Data> mListData=new ArrayList<>();
+    private int pageindex=1;
     JSONObject reslutJSONObject;
     JSONArray contentjsonarry;
     public static final int  REQUEST_CODE=1001;

@@ -1,0 +1,111 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_height="wrap_content"
+    android:background="@color/def_bg"
+    android:clickable="true"
+    android:paddingBottom="1dp">
+
+
+    <LinearLayout
+        android:background="@color/def_bg"
+        android:id="@+id/lin_check"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+        <ImageView
+            android:id="@+id/productItemImg"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="13dp"
+            android:layout_marginLeft="5dp"
+            android:src="@mipmap/mrt"
+            android:scaleType="centerCrop" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="13dp" >
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TextView
+                        android:id="@+id/productTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginTop="20dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:textColor="@color/BLAK"
+                        android:text="电竞游戏王者荣耀反光衣服estar战队队服男短袖T恤衫学生青少年潮"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_below="@+id/productTitle"
+                        android:id="@+id/productAttrs"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="10dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="【红色sdfdfdfdfd】【155/XS】"
+                        android:textSize="11sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_weight="1.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginTop="10dp"
+                            android:id="@+id/productFee"
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:textColor="@color/red"
+                            android:gravity="center"
+                            android:text="1000"
+                            android:digits="0123456789"
+                            android:textSize="14sp"/>
+
+                        <TextView
+                            android:layout_marginTop="10dp"
+                            android:layout_below="@+id/productFee"
+                            android:id="@+id/quantity"
+                            android:layout_width="match_parent"
+                            android:layout_height="24dp"
+                            android:layout_gravity="center"
+                            android:background="@null"
+                            android:gravity="center"
+                            android:text="1"
+                            android:digits="0123456789"
+                            android:textSize="14sp"/>
+                    </RelativeLayout>
+
+
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+    </LinearLayout>
+</LinearLayout>

@@ -286,7 +286,7 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
 
                     case 2:
                         Log.e("TAG", "handleMessage: "+msg.obj.toString());
-                        if (TextUtils.isEmpty(APPID) || (TextUtils.isEmpty(RSA2_PRIVATE) && TextUtils.isEmpty(RSA_PRIVATE))) {
+                  /*      if (TextUtils.isEmpty(APPID) || (TextUtils.isEmpty(RSA2_PRIVATE) && TextUtils.isEmpty(RSA_PRIVATE))) {
                             new AlertDialog.Builder(getApplicationContext()).setTitle("警告").setMessage("需要配置APPID | RSA_PRIVATE")
                                     .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialoginterface, int i) {
@@ -295,7 +295,7 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
                                         }
                                     }).show();
                             return;
-                        }
+                        }*/
                         final String orderInfo = msg.obj.toString();
 
                         Runnable payRunnable = new Runnable() {
