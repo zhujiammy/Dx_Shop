@@ -1,0 +1,350 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg"
+    android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <RelativeLayout
+                android:background="@mipmap/mybg"
+                android:layout_width="match_parent"
+                android:layout_height="220dp">
+
+                <ImageView
+                    android:padding="4dp"
+                    android:id="@+id/setting"
+                    android:layout_above="@id/profile_image"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/setting"
+                    android:layout_width="30dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_height="30dp"
+
+                    />
+                <ImageView
+                    android:padding="4dp"
+                    android:id="@+id/message"
+                    android:src="@mipmap/msg"
+                    android:layout_above="@id/profile_image"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="30dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_height="30dp"
+
+                    />
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="70dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_centerVertical="true"
+                    android:layout_height="70dp"
+                    android:src="@drawable/profile"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#ffffff"/>
+
+                <LinearLayout
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/profile_image"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/user_name"
+                        android:textSize="20sp"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="登录/注册"
+                        />
+                    <TextView
+                        android:gravity="center"
+                        android:background="@drawable/textstyle"
+                        android:id="@+id/label"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/white"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="VIP用户"
+                        />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:background="#2eFFFFFF"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+
+                    <ImageView
+                        android:id="@+id/j"
+                        android:layout_marginLeft="10dp"
+                        android:layout_gravity="center"
+                        android:layout_width="30dp"
+                        android:layout_height="match_parent"
+                        android:src="@mipmap/jifen"
+                        />
+
+                    <TextView
+                        android:layout_toRightOf="@+id/j"
+                        android:layout_marginLeft="20dp"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:gravity="center"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="积分   0"
+                        />
+
+
+                    <TextView
+                        android:layout_alignParentRight="true"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="去购物抵扣"
+                        android:drawableRight="@mipmap/next"
+                        />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="45dp">
+                <TextView
+                    android:textSize="17sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="我的订单"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <TextView
+                    android:id="@+id/view_more"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    android:textSize="14sp"
+                    android:layout_marginLeft="10dp"
+                    android:gravity="center_vertical"
+                    android:text="查看更多订单"
+                    android:drawableRight="@mipmap/nexts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </RelativeLayout>
+            <LinearLayout
+                android:layout_marginTop="2dp"
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="90dp">
+
+                <LinearLayout
+                    android:id="@+id/Pendingpayment_btn"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <ImageView
+                        android:src="@mipmap/dfk"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="待付款"
+                        />
+
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:src="@mipmap/dfh"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="待发货"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:src="@mipmap/dsh"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="待收货"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:src="@mipmap/ywc"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="已完成"
+                        />
+                </LinearLayout>
+                <LinearLayout
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <ImageView
+                        android:src="@mipmap/sh"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        />
+
+                    <TextView
+                        android:layout_marginTop="5dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="售后"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginBottom="30dp"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 我的优惠券"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a1"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 领券中心"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a2"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 我的收藏"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a3"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 在线客服"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a4"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 联系我们"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a5"
+                    android:gravity="center_vertical"
+                    />
+                <TextView
+                    android:background="@color/white"
+                    android:layout_marginBottom="1dp"
+                    android:layout_weight="1"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:text=" 关于我们"
+                    android:drawableRight="@mipmap/nexts"
+                    android:paddingLeft="10dp"
+                    android:textSize="18sp"
+                    android:drawableLeft="@mipmap/a6"
+                    android:gravity="center_vertical"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
+</LinearLayout>

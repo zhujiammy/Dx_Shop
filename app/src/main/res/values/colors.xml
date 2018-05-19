@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="def_bg">#f4f4f4</color>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorAccent">#009688</color>
+    <color name="white">#ffffff</color>
+    <color name="base">#AAAAAA</color>
+    <color name="monsoon">#777777</color>
+    <color name="textcolor_t">#393838</color>
+    <color name="menu_item_press">#2e000000</color>
+    <color name="black">#ffffff</color>
+    <color name="del_color">#ea4949</color>
+    <color name="red">#e31427</color>
+    <color name="primary">#3bc7b2</color>
+    <color name="primary_dark">#f4f8ff</color>
+    <color name="primary_darker">#3bc7b2</color>
+    <color name="accent">#FFFFFF</color>
+    <color name="iron">#CCCCCC</color>
+    <color name="page_backgroup">#f2f2f2</color>
+    <color name="btn_inf_f">#9f9f9f</color>
+    <color name="camera_pop_normal">#5DB8FE</color>
+    <color name="btn_info">#147078</color>
+    <color name="text_color">#ef7777</color>
+    <color name="apply">#e48b58</color>
+    <color name="confirm">#8e6ae2</color>
+    <color name="finish">#25a79f</color>
+    <color name="create">#e65926</color>
+    <color name="pending">#9B30FF</color>
+    <color name="color1">#a6d6e7</color>
+    <color name="color2">#a6d6e7</color>
+    <color name="blue">#d33354d6</color>
+    <color name="cancelled">#7B7B7B</color>
+    <color name="yrk">#25a79f</color>
+    <color name="blue1">#3975ef</color>
+    <color name="blue2">#479df5</color>
+    <color name="bg">#EEECF4</color>
+    <color name="tran">#00FFFFFF</color>
+    <color name="BLAK">#000000</color>
+    <color name="blakapl">#00000000</color>
+    <color name="defcolor">#F3F4F6</color>
+    <color name="province_line_border">#D0D0D0</color>
+    <color name="bocop_dialog_bg">#77000000</color>
+    <color name="color_transparent">#00000000</color>
+    <color name="color_e84515">#e84515</color>
+    <color name="color_d8d8d8">#d8d8d8</color>
+    <color name="text_red">#ec0f38</color>
+    <color name="color_323232">#323232</color>
+    <color name="gray_e9">#e9e9e9</color>
+    <color name="huise">#c9cbcd</color>
+    <color name="text_black">#222222</color>
+
+    <color name="mainColor">#573567</color>
+
+
+    <color name="font_gray_b">#d4d4d3</color>
+
+    <color name="font_tab_1">#42369a</color>
+    <color name="font_tab_0">#b1b1b1</color>
+
+
+    <color name="font_common_1">#424242</color>
+    <color name="font_common_2">#a1a1a1</color>
+    <color name="font_blue">#42369a</color>
+
+    <color name="font_green">#00cccc</color>
+
+    <color name="commom_background">#f3f3f3</color>
+
+
+</resources>

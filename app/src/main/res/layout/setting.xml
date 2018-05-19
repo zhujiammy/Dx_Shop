@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/defcolor"
+    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools">
+    <android.support.design.widget.AppBarLayout
+        android:visibility="visible"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/BLAK"
+                android:textSize="20sp"
+                android:text="账户设置"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:background="@color/defcolor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
+            <RelativeLayout
+                android:id="@+id/accout_setting"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="100dp">
+                <de.hdodenhof.circleimageview.CircleImageView
+                    xmlns:app="http://schemas.android.com/apk/res-auto"
+                    android:id="@+id/profile_image"
+                    android:layout_width="70dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_centerVertical="true"
+                    android:layout_height="70dp"
+                    android:src="@drawable/profile"
+                    app:civ_border_width="2dp"
+                    app:civ_border_color="#ffffff"/>
+
+                <LinearLayout
+                    android:layout_centerVertical="true"
+                    android:layout_toRightOf="@+id/profile_image"
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:gravity="center"
+                        android:id="@+id/nickName"
+                        android:textSize="20sp"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/BLAK"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="吕书涛"
+                        />
+                    <TextView
+                        android:id="@+id/customerName"
+                        android:gravity="center"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/base"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:text="姓 名:吕书套"
+                        />
+                </LinearLayout>
+                <ImageView
+                    android:layout_centerVertical="true"
+                    android:src="@mipmap/next"
+                    android:layout_width="30dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+
+                    />
+            </RelativeLayout>
+            <TextView
+                android:layout_marginTop="10dp"
+                android:background="@color/white"
+                android:layout_marginBottom="0.5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 账户安全"
+                android:drawableRight="@mipmap/nexts"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                />
+            <TextView
+                android:background="@color/white"
+                android:layout_marginBottom="0.5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 实名认证"
+                android:drawableRight="@mipmap/nexts"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                />
+            <TextView
+                android:background="@color/white"
+                android:layout_marginBottom="0.5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 支付设置"
+                android:drawableRight="@mipmap/nexts"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                />
+
+
+            <TextView
+                android:id="@+id/address_tx"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="0.5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 地址管理"
+                android:drawableRight="@mipmap/nexts"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                />
+            <TextView
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="0.5dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 设置"
+                android:drawableRight="@mipmap/nexts"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center_vertical"
+                />
+            <TextView
+                android:id="@+id/login_out_btn"
+                android:background="@color/white"
+                android:layout_marginTop="10dp"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text=" 退出登录"
+                android:paddingLeft="10dp"
+                android:textSize="18sp"
+                android:gravity="center"
+                />
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+</LinearLayout>

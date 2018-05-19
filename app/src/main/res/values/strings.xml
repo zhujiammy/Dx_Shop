@@ -1,0 +1,31 @@
+<resources>
+    <string name="app_name">DX商城</string>
+    <string name="refresh">下拉刷新</string>
+    <string name="release">释放立即刷新</string>
+    <string name="Refreshing">正在刷新...</string>
+    <string name="Refreshfinish">刷新完成</string>
+    <string name="permission">权限(permission)</string>
+    <string name="no_permissions">应用需要必要的运行权限</string>
+    <string name="camera_pop_camera">相机拍摄</string>
+    <string name="action_settings">Settings</string>
+    <string name="menu_settings">Settings</string>
+    <string name="camera_pop_album">从相册选取</string>
+    <string name="settings">设置</string>
+    <string name="help">帮助</string>
+    <string name="string_help_text">当前应用缺少必要权限。\n\n请点击\"设置\"-\"权限\"-打开所需权限。\n\n最后点击两次后退按钮，即可返回。</string>
+    <string name="quit">退出</string>
+    <string name="Enterprisecode">企业编号</string>
+    <string name="Username">用户名</string>
+    <string name="camera_pop_cancel">取消</string>
+    <string name="Password">密码</string>
+    <string name="Rememberpassword">记住密码</string>
+    <string name="Signin">登录</string>
+    <string name="Loggingin">正在登录....</string>
+    <string name="homepage">首页</string>
+    <string name="type">分类</string>
+    <string name="shoppcart">购物车</string>
+    <string name="personalcenter">我</string>
+    <string name="sure">确定</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+</resources>
