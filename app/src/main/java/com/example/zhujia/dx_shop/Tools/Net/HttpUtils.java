@@ -6,13 +6,21 @@ package com.example.zhujia.dx_shop.Tools.Net;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 
+import com.example.zhujia.dx_shop.Activity.LoginActivity;
+import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.Tools.App;
+import com.example.zhujia.dx_shop.Tools.DXApp;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
@@ -671,6 +679,19 @@ public class HttpUtils{
             Log.d(TAG, "params is null");
         }else{
             Log.d(TAG, params);
+            try {
+                JSONObject object=new JSONObject(params);
+                if(object.getString("code").equals("401")){
+                    Looper.prepare();
+                    Toast.makeText(mContext,object.getString("msg"),Toast.LENGTH_SHORT).show();
+                    Intent intent=new Intent(mContext, LoginActivity.class);
+                    intent.putExtra("page","x");
+                    mContext.startActivity(intent);
+                    Looper.loop();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

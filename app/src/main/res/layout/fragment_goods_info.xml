@@ -27,18 +27,13 @@
                     android:background="#eeeff3"
                     android:orientation="vertical">
 
-                    <FrameLayout
+                    <android.support.v4.view.ViewPager
+                        android:id="@+id/view_pager"
                         android:layout_width="match_parent"
-                        android:layout_height="400dp"
-                        android:background="@color/white">
+                        android:layout_height="370dp"
+                        >
 
-                        <!-- 自动轮播的第三方控件 -->
-                        <com.youth.banner.Banner
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
-                            android:id="@+id/banner"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent" />
-                    </FrameLayout>
+                    </android.support.v4.view.ViewPager>
 
                     <View
                         android:layout_width="match_parent"
@@ -330,7 +325,6 @@
 
             <include layout="@layout/include_item_tab" />
         </com.example.zhujia.dx_shop.Tools.SlideDetailsLayout>
-
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_up_slide"
             android:layout_width="wrap_content"
@@ -342,5 +336,6 @@
             app:borderWidth="0dp"
             app:fabSize="mini"
             app:rippleColor="#ffffff" />
+
     </android.support.design.widget.CoordinatorLayout>
 </LinearLayout>

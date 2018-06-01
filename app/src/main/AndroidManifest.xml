@@ -56,6 +56,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
+        android:hardwareAccelerated="true"
         android:name=".Tools.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -64,6 +65,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name=".MainActivity"
             android:theme="@style/AppTheme1">
             <intent-filter>
@@ -73,73 +75,122 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Tools.PermissionsActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
+
         <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.SecondkillActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.ProductDetailskillActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.LoginActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.WaitActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.RegisterActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.MyOrderActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.OrderDetailsActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.NewProduct"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.SettingActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.PersonalInfoActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.CustomerName"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.NickName"
             android:theme="@style/AppTheme1">
 
         </activity>
-        <activity android:name=".Activity.Sex" android:theme="@style/AppTheme1">
+        <activity android:name=".Activity.Sex"   android:screenOrientation="portrait" android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.AddAddressActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.AddressManagementActivity"
             android:theme="@style/AppTheme1">
 
         </activity>
-
-        <activity android:name=".Activity.ProductDetailsActivity" android:theme="@style/AppTheme1">
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.ProductDetailsActivity"
+            android:theme="@style/AppTheme1">
 
         </activity>
-        <activity android:name=".Activity.ConfirmationOrder" android:theme="@style/AppTheme1">
-
-        </activity>
-
 
         <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.CouponCodeActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:name=".Activity.ConfirmationOrder"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+
             android:name="com.alipay.sdk.app.H5PayActivity"
             android:configChanges="orientation|keyboardHidden|navigation|screenSize"
             android:exported="false"
@@ -152,6 +203,12 @@
             android:exported="false"
             android:screenOrientation="behind"
             android:windowSoftInputMode="adjustResize|stateHidden" >
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.ProductTypeActivity"
+            android:theme="@style/AppTheme1">
+
         </activity>
 
 

@@ -1,5 +1,6 @@
 package com.example.zhujia.dx_shop.Activity;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -30,10 +31,12 @@ public class MyOrderActivity extends AppCompatActivity {
     private Completed completed;
     private AfterSale afterSale;
     private SharedPreferences sharedPreferences;
+    private Intent intent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.myorder);
+        intent=getIntent();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -46,9 +49,6 @@ public class MyOrderActivity extends AppCompatActivity {
             }
         });
         initUI();
-
-
-
     }
 
 
@@ -164,5 +164,26 @@ public class MyOrderActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(intent.getStringExtra("intentstatus")!=null){
+            mTabLayout.getTabAt(0).select();
+        }
+        if(intent.getStringExtra("orderstatue").equals("all")){
+            mTabLayout.getTabAt(0).select();
+        }
+        if(intent.getStringExtra("orderstatue").equals("01")){
+            mTabLayout.getTabAt(1).select();
+        }
+        if(intent.getStringExtra("orderstatue").equals("02")){
+            mTabLayout.getTabAt(2).select();
+        }
+        if(intent.getStringExtra("orderstatue").equals("03")){
+            mTabLayout.getTabAt(3).select();
+        }
+        if(intent.getStringExtra("orderstatue").equals("04")){
+            mTabLayout.getTabAt(4).select();
+        }
+    }
 }

@@ -73,7 +73,6 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
     private String iconUrl,nickNamestr,customerNamestr;
     private SharedPreferences sharedPreferences;
     private Button add_address_btn;
-    private int pageindex=0;
     JSONObject object;
     JSONObject pager;
     boolean hasMoreData;
@@ -149,7 +148,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
 
 
     private void loaddata(){
-        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow="+pageindex+"&pageSize=20",new HttpUtils.HttpCallback() {
+        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow=0&pageSize=20",new HttpUtils.HttpCallback() {
             @Override
             public void onSuccess(String data) {
                 // TODO Auto-generated method stub
@@ -172,7 +171,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
     //加载更多
     private void initItemMoreData() {
 
-        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow="+pageindex+2+"&pageSize=20",new HttpUtils.HttpCallback() {
+        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow="+total+"&pageSize=20",new HttpUtils.HttpCallback() {
             @Override
             public void onSuccess(String data) {
                 // TODO Auto-generated method stub
@@ -193,7 +192,6 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
                             if(contentjsonarry.length()<0){
                                 hasMoreData=false;
                             }
-                            pageindex=pageindex+1;
                             hasMoreData=true;
                             fillDataToList(contentjsonarry);
                             if(!hasMoreData){
@@ -245,6 +243,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
                         case 0:
                             //返回item类型数据
                             reslutJSONObject=new JSONObject(msg.obj.toString());
+                            total=reslutJSONObject.getInt("total");
                             mListData.clear();
                             contentjsonarry=reslutJSONObject.getJSONArray("itemsList");
                             fillDataToList(contentjsonarry);
@@ -313,6 +312,11 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
             rechargData.setSeries_name(object.getString("series_name"));
             rechargData.setModel_title(object.getString("model_title"));
             rechargData.setStatus(object.getString("status"));
+            if(!object.isNull("promotionTitle")){
+                rechargData.setPromotionTitle(object.getString("promotionTitle"));
+            }else {
+                rechargData.setPromotionTitle("null");
+            }
             mListData.add(rechargData);
         }
 
@@ -391,7 +395,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
             @Override
             public void run() {
                 mListData.clear();
-                pageindex=0;
+                adapter.notifyDataSetChanged();
                 loaddata();
             }
         },1000);

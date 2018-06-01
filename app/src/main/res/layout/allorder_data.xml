@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:id="@+id/lin_btn"
     android:background="@color/white"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -23,6 +24,7 @@
               android:layout_height="match_parent"
               />
           <TextView
+              android:id="@+id/orderstatu"
               android:layout_alignParentRight="true"
               android:textColor="@color/create"
               android:gravity="center|right"

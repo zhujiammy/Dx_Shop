@@ -14,6 +14,7 @@
         android:theme="@style/AppTheme.AppBarOverlay">
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
+            android:theme="@style/ToolbarTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <TextView
@@ -97,20 +98,6 @@
                 android:text="已选0件商品"
                 />
         </RelativeLayout>
-
-        <TextView
-            android:id="@+id/tv_cart_move_favorite"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_weight="1"
-            android:background="#EDEDED"
-            android:clickable="true"
-            android:gravity="center"
-            android:padding="10dp"
-            android:text="移人收藏夹"
-            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_cart_buy_or_del"

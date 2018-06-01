@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.ResizableImageView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -106,10 +107,13 @@ public class GoodsDetailWebFragment extends Fragment {
                         JSONArray object=new JSONArray(msg.obj.toString());
                         for(int i=0;i<object.length();i++){
                             JSONObject object1=object.getJSONObject(i);
-                            View views = View.inflate(getActivity(),R.layout.productimg,null);
-                            ImageView imageView=(ImageView)views.findViewById(R.id.productimg);
-                            Glide.with(getActivity()).load(Constant.loadimag+object1.getString("imgUrl")).into(imageView);
-                            linproductimg.addView(views);
+                            if(getActivity()!=null){
+                                View views = View.inflate(getActivity(),R.layout.productimg,null);
+                                ImageView imageView=(ResizableImageView)views.findViewById(R.id.productimg);
+                                Glide.with(getActivity()).load(Constant.loadimag+object1.getString("imgUrl")).into(imageView);
+                                linproductimg.addView(views);
+                            }
+
                         }
                         break;
                 }

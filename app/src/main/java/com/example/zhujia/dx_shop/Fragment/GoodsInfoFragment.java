@@ -12,19 +12,23 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.PagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.TranslateAnimation;
-import android.widget.Button;
-import android.widget.CompoundButton;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -32,22 +36,22 @@ import android.widget.Toast;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.holder.CBViewHolderCreator;
 import com.bumptech.glide.Glide;
-import com.example.zhujia.dx_shop.Activity.AddAddressActivity;
 import com.example.zhujia.dx_shop.Activity.ProductDetailsActivity;
 import com.example.zhujia.dx_shop.Adapter.ItemRecommendAdapter;
-import com.example.zhujia.dx_shop.Adapter.NetworkImageHolderView;
+import com.example.zhujia.dx_shop.Adapter.ViewAdapter;
 import com.example.zhujia.dx_shop.Data.AttrKey;
 import com.example.zhujia.dx_shop.Data.AttrValues;
 import com.example.zhujia.dx_shop.Data.Data;
+import com.example.zhujia.dx_shop.Data.InventoryList;
 import com.example.zhujia.dx_shop.Data.Objects;
 import com.example.zhujia.dx_shop.Data.Product;
 import com.example.zhujia.dx_shop.Data.ProductAttrList;
 import com.example.zhujia.dx_shop.Data.ProductImageList;
 import com.example.zhujia.dx_shop.Data.ProductItemList;
+import com.example.zhujia.dx_shop.Data.Promotions;
 import com.example.zhujia.dx_shop.Data.RecommendGoodsBean;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FNRadioGroup;
-import com.example.zhujia.dx_shop.Tools.GlideImageLoader;
 import com.example.zhujia.dx_shop.Tools.GoodsConfigFragment;
 import com.example.zhujia.dx_shop.Tools.MRadioButton;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
@@ -55,7 +59,6 @@ import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
 import com.example.zhujia.dx_shop.Tools.SlideDetailsLayout;
 import com.gxz.PagerSlidingTabStrip;
 import com.hmy.popwindow.PopWindow;
-import com.youth.banner.Banner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,13 +80,18 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     private ScrollView sv_goods_info;
     private FloatingActionButton fab_up_slide;
     public ConvenientBanner  vp_recommend;
-    private Banner banner;
+    private com.example.zhujia.dx_shop.Tools.Banner banner;
+    private ViewPager view_pager;
+    private List<View> viewList = new ArrayList<View>();
+    WebView webView;
+    private PagerAdapter viewAdapter;
+    private LayoutInflater inflater;
     private LinearLayout ll_goods_detail, ll_goods_config;
     private TextView tv_goods_detail, tv_goods_config;
     private View v_tab_cursor;
     public FrameLayout fl_content;
     public LinearLayout ll_current_goods, ll_activity, ll_comment, ll_recommend, ll_pull_up;
-    public TextView tv_goods_title, tv_new_price, tv_old_price, tv_current_goods, tv_comment_count, tv_good_comment;
+    public TextView cuxiao,price,tv_goods_title, tv_new_price, tv_old_price,kucun_tv,tv_current_goods, tv_comment_count, tv_good_comment;
     private PopWindow popWindow;
     private View customView;
     private ImageView img;
@@ -95,7 +103,9 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     private List<Data>productItem=new ArrayList<>();
     private List<Objects>object=new ArrayList<>();
     private List<ProductImageList>productImageLists=new ArrayList<>();
+    private List<Promotions>promotions=new ArrayList<>();
     private List <ProductItemList>productItemLists=new ArrayList<>();
+    private List<InventoryList>inventoryLists=new ArrayList<>();
     private List<ProductAttrList>productAttrLists=new ArrayList<>();
     private List<AttrValues>attrValues=new ArrayList<>();
     public GoodsConfigFragment goodsConfigFragment;
@@ -106,7 +116,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     private FragmentTransaction fragmentTransaction;
     private FragmentManager fragmentManager;
     public ProductDetailsActivity activity;
-    private LayoutInflater inflater;
+    private LayoutInflater inflaters;
     private FNRadioGroup groupradion;
     private TextView attrKey_tv,attrKeys;
     private String productModelAttrsID;
@@ -124,6 +134,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     private SharedPreferences sharedPreferences;
     private String id;
     private Bundle bundle;
+    View view2;
 
     @Override
     public void onAttach(Context context) {
@@ -136,8 +147,6 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onStop() {
         super.onStop();
-        //结束轮播
-        banner.stopAutoPlay();
     }
 
 
@@ -150,21 +159,24 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
         this.inflater = inflater;
         View rootView = inflater.inflate(R.layout.fragment_goods_info, null);
         initView(rootView);
-        sharedPreferences =getActivity().getSharedPreferences("Session",
-                Context.MODE_APPEND);
-        TOKEN=sharedPreferences.getString("token","");
-        loginUserId=sharedPreferences.getString("userId","");
         initListener();
         initData();
         return rootView;
     }
 
+    @SuppressLint("WrongConstant")
+    @Override
+    public void onResume() {
+        super.onResume();
+        sharedPreferences =getActivity().getSharedPreferences("Session",
+                Context.MODE_APPEND);
+        TOKEN=sharedPreferences.getString("token","");
+        loginUserId=sharedPreferences.getString("userId","");
+    }
 
     @Override
     public void onStart() {
         super.onStart();
-        //开始轮播
-        banner.startAutoPlay();
         if(isAdded()){
             id=getArguments().getString("id");
             Log.e("TAG", "onStart: "+id );
@@ -201,7 +213,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     }
 
     private void initView(View rootView) {
-        banner = (Banner) rootView.findViewById(R.id.banner);
+        view_pager=(ViewPager)rootView.findViewById(R.id.view_pager);
         psts_tabs = (PagerSlidingTabStrip)rootView.findViewById(R.id.psts_tabs);
         fab_up_slide = (FloatingActionButton) rootView.findViewById(R.id.fab_up_slide);
         sv_switch = (SlideDetailsLayout) rootView.findViewById(R.id.sv_switch);
@@ -236,6 +248,9 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
         lins=(LinearLayout)customView.findViewById(R.id.lins);
         add_carts=(TextView) customView.findViewById(R.id.add_carts);
         add_carts.setOnClickListener(this);
+        cuxiao=(TextView)customView.findViewById(R.id.cuxiao);
+        kucun_tv=(TextView)customView.findViewById(R.id.kucun);
+        price=(TextView)customView.findViewById(R.id.price);
         popWindow = new PopWindow.Builder(getActivity())
                 .setStyle(PopWindow.PopWindowStyle.PopUp)
                 .setView(customView)
@@ -303,8 +318,13 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
         }, handledData);
     }
 
+    public void popshow(){
+        popWindow.show();
+    }
+
     @Override
     public void onClick(View v) {
+
         switch (v.getId()) {
             case R.id.ll_pull_up:
                 //上拉查看图文详情
@@ -337,6 +357,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                 //选择参数
                 popWindow.show();
                 break;
+
 
             case R.id.iv_add:
                 if (countNum < 1000) {
@@ -502,34 +523,68 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                         product.setSalePrice(jsonproduct.getInt("salePrice"));
                         product.setVideo(jsonproduct.getString("video"));
                         objects.setProduct(product);
+                        View view1 = inflater.inflate(R.layout.webview, null);
+                        webView=(WebView)view1.findViewById(R.id.web);
+                        webView.getSettings().setDefaultTextEncodingName("utf-8") ;//这句话去掉也没事。。只是设置了编码格式
+                        webView.getSettings().setJavaScriptEnabled(true);	//这句话必须保留。。不解释
+                        webView.getSettings().setDomStorageEnabled(true);//这句话必须保留。。否则无法播放优酷视频网页。。其他的可以
+                        webView.getSettings().setPluginState(WebSettings.PluginState.ON);
+                        webView.setWebChromeClient(new MyWebChromeClient());//重写一下。有的时候可能会出现问题
+                        webView.setWebViewClient(new WebViewClient(){//不写的话自动跳到默认浏览器了。。跳出APP了。。怎么能不写？
+                            public boolean shouldOverrideUrlLoading(WebView view, String url) {//这个方法必须重写。否则会出现优酷视频周末无法播放。周一-周五可以播放的问题
+                                if(url.startsWith("intent")||url.startsWith("youku")){
+                                    return true;
+                                }else{
+                                    return super.shouldOverrideUrlLoading(view, url);
+                                }
+                            }
+                        });
+                        webView.loadUrl("http://player.youku.com/embed/"+product.getVideo()+"");
+                        viewList.add(view1);
 
                         tv_goods_title.setText(product.getModelTitle());
                         tv_new_price.setText(String.valueOf(product.getSalePrice()));
 
+                        JSONArray promotionjsonarry=Jsonobject.getJSONArray("promotions");
+                        if(promotionjsonarry.length()>0){
+                            Promotions promotion=null;
+                            for(int l=0;l<promotionjsonarry.length();l++){
+                                promotion=new Promotions();
+                                JSONObject promtionobj=promotionjsonarry.getJSONObject(l);
+                                promotion.setOnSalePrice(promtionobj.getString("onSalePrice"));
+                                promotion.setProductItemId(promtionobj.getString("productItemId"));
+                                promotion.setActivityName(promtionobj.getString("activityName"));
+                                promotion.setStartTime(promtionobj.getString("startTime"));
+                                promotion.setEndTime(promtionobj.getString("endTime"));
+                                promotion.setId(promtionobj.getString("id"));
+                                promotion.setActivityType(promtionobj.getString("activityType"));
+                                promotion.setProductModelId(promtionobj.getString("productModelId"));
+                                promotion.setStatus(promtionobj.getString("status"));
+                                promotions.add(promotion);
+
+                            }
+                        }
+
 
                         ProductImageList productImageList=null;
                         JSONArray productImagejsonarry=Jsonobject.getJSONArray("productImageList");
-                        imgUrls=new ArrayList<>();
                         for(int i=0;i<productImagejsonarry.length();i++){
+                            view2 = inflater.inflate(R.layout.banner_xml, null);
+                            ImageView imageView = (com.example.zhujia.dx_shop.Tools.ResizableImageView) view2.findViewById(R.id.pic_item);
                             productImageList=new ProductImageList();
                             JSONObject object=productImagejsonarry.getJSONObject(i);
                             productImageList.setId(object.getString("id"));
                             productImageList.setProductModelId(object.getString("productModelId"));
                             productImageList.setListImg(object.getString("listImg"));
                             productImageList.setIndexNum(object.getInt("indexNum"));
-                            imgUrls.add(Constant.loadimag+productImageList.getListImg());
+                            Glide.with(getActivity()).load(Constant.loadimag+productImageList.getListImg()).into(imageView);
                             productImageLists.add(productImageList);
+                            viewList.add(view2);
                         }
-
-                        //设置图片加载器
-                        banner.setImageLoader(new GlideImageLoader());
-                        banner.setDelayTime(6000);
-                        //设置图片集合
-                        banner.setImages(imgUrls);
-                        //banner设置方法全部调用完毕时最后调用
-                        banner.start();
-
-
+                        //实例化适配器
+                        viewAdapter = new ViewAdapter(viewList);
+                        //设置适配器
+                        view_pager.setAdapter(viewAdapter);
                         ProductItemList productItemList=null;
                        JSONArray productItemListjsonarry=Jsonobject.getJSONArray("productItemList");
                         for(int d=0;d<productItemListjsonarry.length();d++){
@@ -552,6 +607,17 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                         }
                         objects.setProductItemList(productItemLists);
 
+                        InventoryList inventoryList=null;
+                        JSONArray inventoryListsjsonarry=Jsonobject.getJSONArray("inventory");
+                        for(int i=0;i<inventoryListsjsonarry.length();i++){
+                            inventoryList=new InventoryList();
+                            JSONObject object=inventoryListsjsonarry.getJSONObject(i);
+                            inventoryList.setProductItemId(object.getString("skuId"));
+                            inventoryList.setQuantity(object.getString("quantity"));
+                            inventoryList.setLockQuantity(object.getString("lockQuantity"));
+                            inventoryLists.add(inventoryList);
+                        }
+
 
 
                         ProductAttrList productAttrList=null;
@@ -560,6 +626,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                         int num=0;
                         final Map<String,String>map=new HashMap<>();
                         final Map<String,String>map1=new HashMap<>();
+                        lins.removeAllViews();
                         for(int j=0;j<productAttrListjsonarray.length();j++){
                             productAttrList=new ProductAttrList();
                             final View views = View.inflate(getActivity(),R.layout.layout_group,null);
@@ -661,11 +728,49 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                             for(int y=0;y<productItemLists.size();y++){
                                                 if((buffer.toString().equals(productItemLists.get(y).getProductModelAttrs()))){
                                                     Glide.with(getActivity()).load(Constant.loadimag+productItemLists.get(y).getListImg()).into(img);
+                                                    String productId=productItemLists.get(y).getId();
                                                     salePrice.setText("¥"+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
                                                     itemNo.setText("商品编号:"+productItemLists.get(y).getItemNo());
+                                                    Log.e("TAG", "promotions:"+promotions.size());
                                                     Log.e("TAG", "onClick: "+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
-                                                    productItemId=productItemLists.get(y).getId();
+                                                        if(promotions.size()==0){
+                                                            productItemId=productItemLists.get(y).getId();
+                                                        }else {
+                                                            for(int t=0;t<promotions.size();t++){
+                                                                if(productId.equals(promotions.get(t).getProductItemId())){
+                                                                    cuxiao.setText(promotions.get(t).getActivityName());
+                                                                    price.setText("¥"+promotions.get(t).getOnSalePrice());
+                                                                    salePrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG);
+                                                                   // Toast.makeText(getActivity(),promotions.get(t).getOnSalePrice(),Toast.LENGTH_SHORT).show();
+                                                                    productItemId=promotions.get(t).getProductItemId();
+                                                                }else {
+                                                                    productItemId=productItemLists.get(y).getId();
+                                                                    cuxiao.setText("");
+                                                                    price.setText("");
+                                                                    salePrice.getPaint().setFlags(0);
+                                                                }
+                                                            }
+                                                        }
+
+
+
                                                     Log.e("TAG", "productItemId: "+productItemId );
+                                                        for(int i=0;i<inventoryLists.size();i++){
+                                                            if(productItemId.equals(inventoryLists.get(i).getProductItemId())){
+                                                                int quantity= Integer.parseInt(inventoryLists.get(i).getQuantity());
+                                                                int LockQuantity= Integer.parseInt(inventoryLists.get(i).getLockQuantity());
+                                                                int kucun=quantity-LockQuantity;
+                                                                kucun_tv.setText("库存:"+kucun);
+                                                                if(kucun==0){
+                                                                    add_carts.setEnabled(false);
+                                                                    add_carts.setText("暂时没有库存哦！");
+                                                                }else {
+                                                                    add_carts.setEnabled(true);
+                                                                    add_carts.setText("加入购物车");
+                                                                }
+                                                            }
+                                                        }
+
 
                                                 }
                                             }
@@ -728,5 +833,62 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
             handleData.add(recommendGoods);
         }
         return handleData;
+    }
+
+
+    class MyWebChromeClient extends WebChromeClient {
+        private View myView = null;
+
+        // 全屏
+        @Override
+        public void onShowCustomView(View view, CustomViewCallback callback) {
+            super.onShowCustomView(view, callback);
+
+            ViewGroup parent = (ViewGroup) webView.getParent();
+            parent.removeView(webView);
+
+            // 设置背景色为黑色
+            view.setBackgroundColor(getResources().getColor(R.color.BLAK));
+            parent.addView(view);
+            myView = view;
+
+            setFullScreen();
+
+        }
+
+        // 退出全屏
+        @Override
+        public void onHideCustomView() {
+            super.onHideCustomView();
+            if (myView != null) {
+
+                ViewGroup parent = (ViewGroup) myView.getParent();
+                parent.removeView(myView);
+                parent.addView(webView);
+                myView = null;
+
+                quitFullScreen();
+            }
+        }
+    }
+
+    /**
+     * 设置全屏
+     */
+    private void setFullScreen() {
+        // 设置全屏的相关属性，获取当前的屏幕状态，然后设置全屏
+        getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
+
+    /**
+     * 退出全屏
+     */
+    private void quitFullScreen() {
+        // 声明当前屏幕状态的参数并获取
+        final WindowManager.LayoutParams attrs = getActivity().getWindow().getAttributes();
+        attrs.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getActivity().getWindow().setAttributes(attrs);
+        getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
     }
 }

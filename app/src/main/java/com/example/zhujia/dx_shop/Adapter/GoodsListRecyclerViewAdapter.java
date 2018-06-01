@@ -7,10 +7,12 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Base64;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.BaseRecyclerAdapter;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
+import com.lid.lib.LabelView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,6 +30,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+
+import jp.shts.android.library.TriangleLabelView;
 
 
 /**
@@ -119,10 +124,20 @@ public class GoodsListRecyclerViewAdapter extends BaseRecyclerAdapter<BaseRecycl
             }else {
                 linearViewHolder.model_img.setImageDrawable(context.getResources().getDrawable(R.mipmap.mrt));
             }
+
+                if(!data.get(position).getPromotionTitle().equals("null")){
+                    linearViewHolder.label.setText(data.get(position).getPromotionTitle());
+                    linearViewHolder.label.setVisibility(View.VISIBLE);
+                }else{
+                    linearViewHolder.label.setText("");
+                    linearViewHolder.label.setVisibility(View.GONE);
+                }
+
             linearViewHolder.model_title.setText(data.get(position).getModel_title());
             linearViewHolder.series_name.setText(data.get(position).getSeries_name());
             linearViewHolder.sale_price.setText(data.get(position).getSale_price());
             linearViewHolder.itemView.setTag(position);
+
 
         }else {
             GridViewHolder gridViewHolder= (GridViewHolder) holder;
@@ -131,6 +146,15 @@ public class GoodsListRecyclerViewAdapter extends BaseRecyclerAdapter<BaseRecycl
                 Glide.with(context).load(Constant.loadimag+data.get(position).getModel_img()).into(gridViewHolder.model_img);
             }else {
                 gridViewHolder.model_img.setImageDrawable(context.getResources().getDrawable(R.mipmap.mrt));
+            }
+            LabelView label = new LabelView(context);
+
+            if(!data.get(position).getPromotionTitle().equals("null")){
+                gridViewHolder.label.setText(data.get(position).getPromotionTitle());
+                gridViewHolder.label.setVisibility(View.VISIBLE);
+            }else{
+                gridViewHolder.label.setText("");
+                gridViewHolder.label.setVisibility(View.INVISIBLE);
             }
             gridViewHolder.model_title.setText(data.get(position).getModel_title());
             gridViewHolder.series_name.setText(data.get(position).getSeries_name());
@@ -147,32 +171,38 @@ public class GoodsListRecyclerViewAdapter extends BaseRecyclerAdapter<BaseRecycl
 
     public static class LinearViewHolder extends BaseRecyclerViewHolder {
 
-        private ImageView model_img;
-        private TextView model_title,series_name,sale_price;
+        private com.lid.lib.LabelImageView model_img;
+        private TextView model_title,series_name,sale_price,label;
         private ImageView add_cart;
+
 
         public LinearViewHolder(View itemView) {
             super(itemView);
-            model_img= (ImageView) itemView.findViewById(R.id.model_img);
+            model_img= (com.lid.lib.LabelImageView) itemView.findViewById(R.id.model_img);
             model_title= (TextView) itemView.findViewById(R.id.model_title);
             series_name= (TextView) itemView.findViewById(R.id.series_name);
             sale_price= (TextView) itemView.findViewById(R.id.sale_price);
+            label=(TextView)itemView.findViewById(R.id.label);
         }
     }
 
     public static class GridViewHolder extends BaseRecyclerViewHolder {
 
-        private ImageView model_img;
-        private TextView model_title,series_name,sale_price;
+        private com.lid.lib.LabelImageView model_img;
+        private TextView model_title,series_name,sale_price,label;
         private View rightView;
+        private LinearLayout labelview;
 
         public GridViewHolder(View itemView) {
             super(itemView);
-            model_img= (ImageView) itemView.findViewById(R.id.model_img);
+            model_img= (com.lid.lib.LabelImageView) itemView.findViewById(R.id.model_img);
             model_title= (TextView) itemView.findViewById(R.id.model_title);
             series_name= (TextView) itemView.findViewById(R.id.series_name);
             sale_price= (TextView) itemView.findViewById(R.id.sale_price);
             rightView=itemView.findViewById(R.id.view_right);
+            labelview=(LinearLayout)itemView.findViewById(R.id.labelview);
+            label=(TextView)itemView.findViewById(R.id.label);
+
         }
     }
 

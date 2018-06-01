@@ -17,8 +17,7 @@ import com.hmy.popwindow.window.PopUpWindow;
 /**
  * Created by HMY on 2016/9/10.
  */
-public class PopWindow implements PopWindowInterface,
-        PopWindowInterface.OnStartShowListener, PopWindowInterface.OnStartDismissListener {
+public class PopWindow implements PopWindowInterface, PopWindowInterface.OnStartShowListener, PopWindowInterface.OnStartDismissListener {
 
     private Activity mActivity;
 

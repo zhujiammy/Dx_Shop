@@ -2,34 +2,43 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal">
 
     <LinearLayout
+        android:id="@+id/labelview"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="vertical">
 
-        <ImageView
-            android:padding="5dp"
-            android:src="@mipmap/mrt"
-            android:layout_gravity="center"
-            android:id="@+id/model_img"
-            android:layout_width="130dp"
-            android:layout_height="130dp" />
+
 
         <TextView
-
-            android:id="@+id/tv_name"
-            android:layout_width="match_parent"
+            android:layout_gravity="right"
+            android:id="@+id/label"
+            android:background="@color/red"
+            android:gravity="center_vertical"
+            android:textSize="15sp"
+            android:padding="1dp"
+            android:layout_marginLeft="5dp"
+            android:textColor="@color/white"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:maxLines="2"
-            android:minLines="2"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:textColor="#333333"
-            android:textSize="15sp" />
+            android:text="¥2199"
+            />
+        <com.lid.lib.LabelImageView
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:src="@mipmap/mrt"
+            android:id="@+id/model_img"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
+            android:scaleType="centerCrop"
+            />
+
+
 
 
         <LinearLayout
@@ -55,6 +64,7 @@
                    android:layout_height="match_parent">
 
                 <LinearLayout
+                    android:gravity="center_vertical"
                     android:orientation="vertical"
                     android:layout_weight="1"
                     android:layout_width="match_parent"
@@ -90,7 +100,7 @@
                        android:layout_width="match_parent"
                        android:layout_height="match_parent">
                        <TextView
-                           android:textSize="20sp"
+                           android:textSize="15sp"
                            android:id="@+id/series_name"
                            android:layout_marginLeft="5dp"
                            android:layout_marginTop="3dp"

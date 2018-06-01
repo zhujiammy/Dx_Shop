@@ -1,8 +1,6 @@
 package com.example.zhujia.dx_shop.Fragment;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,17 +23,9 @@ import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.Activity.LoginActivity;
 import com.example.zhujia.dx_shop.Activity.MyOrderActivity;
 import com.example.zhujia.dx_shop.Activity.SettingActivity;
-import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.R;
-import com.example.zhujia.dx_shop.Tools.FixedGridLayout;
-import com.example.zhujia.dx_shop.Tools.MaskableImageView;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -46,7 +36,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MyPage extends Fragment implements View.OnClickListener {
 
     private View view;
-    private LinearLayout Pendingpayment_btn;
+    private LinearLayout Pendingpayment_btn,PendingDelivery,Goodsreceived,Completed;
     private SharedPreferences sharedPreferences;
     private String LoginState,TOKEN,loginUserId;
     private CircleImageView profile_image;
@@ -80,6 +70,12 @@ public class MyPage extends Fragment implements View.OnClickListener {
 
         Pendingpayment_btn=(LinearLayout)view.findViewById(R.id.Pendingpayment_btn);
         Pendingpayment_btn.setOnClickListener(this);
+        PendingDelivery=(LinearLayout)view.findViewById(R.id.PendingDelivery);
+        PendingDelivery.setOnClickListener(this);
+        Goodsreceived=(LinearLayout)view.findViewById(R.id.Goodsreceived);
+        Goodsreceived.setOnClickListener(this);
+        Completed=(LinearLayout)view.findViewById(R.id.Completed);
+        Completed.setOnClickListener(this);
         view_more=(TextView)view.findViewById(R.id.view_more);
         view_more.setOnClickListener(this);
         profile_image=(CircleImageView)view.findViewById(R.id.profile_image);
@@ -151,6 +147,41 @@ public class MyPage extends Fragment implements View.OnClickListener {
 
             if(LoginState.equals("yes")){
                 intent=new Intent(getActivity(), MyOrderActivity.class);
+                intent.putExtra("orderstatue","01");
+                startActivity(intent);
+            }else {
+                Intent intent=new Intent(getActivity(),LoginActivity.class);
+                intent.putExtra("page","3");
+                startActivity(intent);
+            }
+
+        }
+        if(v==PendingDelivery){
+            if(LoginState.equals("yes")){
+                intent=new Intent(getActivity(), MyOrderActivity.class);
+                intent.putExtra("orderstatue","02");
+                startActivity(intent);
+            }else {
+                Intent intent=new Intent(getActivity(),LoginActivity.class);
+                intent.putExtra("page","3");
+                startActivity(intent);
+            }
+        }
+        if(v==Goodsreceived){
+            if(LoginState.equals("yes")){
+                intent=new Intent(getActivity(), MyOrderActivity.class);
+                intent.putExtra("orderstatue","03");
+                startActivity(intent);
+            }else {
+                Intent intent=new Intent(getActivity(),LoginActivity.class);
+                intent.putExtra("page","3");
+                startActivity(intent);
+            }
+        }
+        if(v==Completed){
+            if(LoginState.equals("yes")){
+                intent=new Intent(getActivity(), MyOrderActivity.class);
+                intent.putExtra("orderstatue","04");
                 startActivity(intent);
             }else {
                 Intent intent=new Intent(getActivity(),LoginActivity.class);
@@ -163,6 +194,7 @@ public class MyPage extends Fragment implements View.OnClickListener {
             //查看更多订单
             if(LoginState.equals("yes")){
                 intent=new Intent(getActivity(),MyOrderActivity.class);
+                intent.putExtra("orderstatue","all");
                 startActivity(intent);
             }else {
                 Intent intent=new Intent(getActivity(),LoginActivity.class);

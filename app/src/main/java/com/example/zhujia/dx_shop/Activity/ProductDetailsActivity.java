@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -16,6 +18,7 @@ import com.example.zhujia.dx_shop.Adapter.ItemTitlePagerAdapter;
 import com.example.zhujia.dx_shop.Fragment.GoodsCommentFragment;
 import com.example.zhujia.dx_shop.Fragment.GoodsDetailFragment;
 import com.example.zhujia.dx_shop.Fragment.GoodsInfoFragment;
+import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
@@ -25,7 +28,7 @@ import com.gxz.PagerSlidingTabStrip;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProductDetailsActivity extends AppCompatActivity {
+public class ProductDetailsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Intent intent;
     public PagerSlidingTabStrip psts_tabs;
@@ -37,7 +40,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
     private GoodsDetailFragment goodsDetailFragment;
     private GoodsCommentFragment goodsCommentFragment;
     private String id;
-    public TextView tv_title;
+    public TextView tv_title,add_cart,buy;
 
 
     @Override
@@ -60,6 +63,10 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
         });
         tv_title = (TextView) findViewById(R.id.tv_title);
+        add_cart=(TextView)findViewById(R.id.add_carts);
+        add_cart.setOnClickListener(this);
+        buy=(TextView)findViewById(R.id.buy);
+        buy.setOnClickListener(this);
         psts_tabs = (PagerSlidingTabStrip) findViewById(R.id.psts_tabs);
         vp_content = (NoScrollViewPager) findViewById(R.id.vp_content);
         fragmentList.add(goodsInfoFragment = new GoodsInfoFragment());
@@ -75,10 +82,42 @@ public class ProductDetailsActivity extends AppCompatActivity {
 
 
 
+
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if(id==R.id.shopcart){
+            intent=new Intent(getApplicationContext(),MainActivity.class);
+            intent.putExtra("select","2");
+            startActivity(intent);
+        }
 
 
 
+        return super.onOptionsItemSelected(item);
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.goshopcart,menu);//加载menu布局
+        return true;
+    }
+
+    @Override
+    public void onClick(View v) {
+        if(v==add_cart){
+            goodsInfoFragment.popshow();
+        }
+        if(v==buy){
+            goodsInfoFragment.popshow();
+        }
+    }
 }

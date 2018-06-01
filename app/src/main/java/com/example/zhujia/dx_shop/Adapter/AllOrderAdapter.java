@@ -36,11 +36,13 @@ import com.example.zhujia.dx_shop.Activity.AddressManagementActivity;
 import com.example.zhujia.dx_shop.Activity.PersonalInfoActivity;
 import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.Data.OrderData;
+import com.example.zhujia.dx_shop.Data.OrderStatus;
 import com.example.zhujia.dx_shop.Fragment.AllOrder;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.BaseRecyclerAdapter;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.insertComma;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -63,16 +65,18 @@ import static com.example.zhujia.dx_shop.Activity.AddressManagementActivity.INTE
 public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.BaseRecyclerViewHolder> implements View.OnClickListener  {
 
     private List<OrderData> datas;
-    public Context context;
+    public AllOrder context;
     private int type=0;
     private SharedPreferences sharedPreferences;
     private Handler mHandler;
-    private AllOrderAdapter.OnitemClickListener onitemClickListener=null;
+    private List<OrderStatus> orderStatuses= new ArrayList<OrderStatus>();
+    private OnitemClickListener onitemClickListener=null;
+    private  LinearLayout lin_btn;
     @SuppressLint("WrongConstant")
-    public AllOrderAdapter(Context context1, List<OrderData>data){
+    public AllOrderAdapter(AllOrder context1, List<OrderData>data){
         this.context=context1;
         this.datas=data;
-        sharedPreferences =context1.getSharedPreferences("Session", Context.MODE_APPEND);
+        sharedPreferences =context1.getActivity().getSharedPreferences("Session", Context.MODE_APPEND);
 
     }
     @Override
@@ -82,7 +86,7 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
         }
     }
 
-    public void setOnitemClickListener(AllOrderAdapter.OnitemClickListener onitemClickListener) {
+    public void setOnitemClickListener(OnitemClickListener onitemClickListener) {
         this.onitemClickListener = onitemClickListener;
     }
 
@@ -140,34 +144,72 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
     public void onBindViewHolder(BaseRecyclerViewHolder holder, final int position) {
         if (type==0){
             final AllOrderAdapter.LinearViewHolder linearViewHolder= (AllOrderAdapter.LinearViewHolder) holder;
-            linearViewHolder.productFee.setText("合计:"+new DecimalFormat("0.00").format(datas.get(position).getProductFee()));
+            linearViewHolder.productFee.setText("合计:"+new DecimalFormat("0.00").format(datas.get(position).getOrderTotalFee()));
             linearViewHolder.orderNo.setText("订单编号:"+datas.get(position).getOrderNo());
+            linearViewHolder.itemView.setTag(position);
+            linearViewHolder.lin_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.orderDetails(position);
+                }
+            });
+
+
+
 
             try {
                 JSONArray orderItems=new JSONArray(datas.get(position).getOrderItems());
                 linearViewHolder.order_view.removeAllViews();
                 int num=0;
                 for(int i=0;i<orderItems.length();i++){
-                    View view= LayoutInflater.from(context.getApplicationContext()).inflate(R.layout.orderviewdata,null);
+                    View view= LayoutInflater.from(context.getActivity()).inflate(R.layout.orderviewdata,null);
+                    lin_btn=(LinearLayout)view.findViewById(R.id.lin_btn);
                     JSONObject object=orderItems.getJSONObject(i);
                     TextView productTitle=(TextView)view.findViewById(R.id.productTitle);
                     TextView quantity=(TextView)view.findViewById(R.id.quantity);
                     TextView productFee=(TextView)view.findViewById(R.id.productFee);
                     TextView productAttrs=(TextView)view.findViewById(R.id.productAttrs);
                     ImageView productItemImg=(ImageView)view.findViewById(R.id.productItemImg);
+                    double orderFee=Double.parseDouble(object.getString("orderFee"));
+                    double quantitys=Double.parseDouble(object.getString("quantity"));
+                    double number= 0;
+                    try {
+                        number = insertComma.div(orderFee,quantitys,1);
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                    int price = (new Double(number)).intValue();
 
                     productTitle.setText(object.getString("productTitle"));
                     quantity.setText("X"+object.getString("quantity"));
-                    productFee.setText("¥"+new DecimalFormat("0.00").format(object.getDouble("productFee")));
+                    productFee.setText("¥"+new DecimalFormat("0.00").format(price));
                     productAttrs.setText(object.getString("productAttrs"));
                     Glide.with(context).load(Constant.loadimag+object.getString("productItemImg")).into(productItemImg);
                     num++;
                     linearViewHolder.num.setText("共计"+String.valueOf(num)+"商品");
                     linearViewHolder.order_view.addView(view);
-
-
-
+                    lin_btn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            context.orderDetails(position);
+                        }
+                    });
                 }
+
+                if(datas.get(position).getStatuslist()!=null){
+                    JSONArray statuslist = new JSONArray(datas.get(position).getStatuslist());
+                    for(int i=0;i<statuslist.length();i++){
+                        JSONObject object1=statuslist.getJSONObject(i);
+                        orderStatuses.add(new OrderStatus(object1.getString("key"),object1.getString("value")));
+
+                    }
+                    for(int j=0;j<orderStatuses.size();j++){
+                        if(datas.get(position).getOrderStatus().equals(orderStatuses.get(j).getStr())){
+                            linearViewHolder.orderstatu.setText(orderStatuses.get(j).getText());
+                        }
+                    }
+                }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -183,14 +225,16 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
 
     public static class LinearViewHolder extends BaseRecyclerViewHolder {
 
-        private TextView num,productFee,orderNo;
-        private LinearLayout order_view;
+        private TextView num,productFee,orderNo,orderstatu;
+        private LinearLayout order_view,lin_btn;
         public LinearViewHolder(View itemView) {
             super(itemView);
             num=(TextView)itemView.findViewById(R.id.num);
             productFee=(TextView)itemView.findViewById(R.id.productFee);
             orderNo=(TextView)itemView.findViewById(R.id.orderNo);
             order_view=(LinearLayout)itemView.findViewById(R.id.order_view);
+            orderstatu=(TextView)itemView.findViewById(R.id.orderstatu);
+            lin_btn=(LinearLayout)itemView.findViewById(R.id.lin_btn);
 
 
         }

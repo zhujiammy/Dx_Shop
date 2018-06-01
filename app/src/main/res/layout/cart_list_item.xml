@@ -74,6 +74,20 @@
                 android:maxLines="2"
                 android:text="红色】【155/XS】"
                 android:textSize="13sp" />
+            <TextView
+                android:id="@+id/promotionTitle"
+                android:layout_marginTop="5dp"
+                android:background="@color/red"
+                android:textColor="@color/white"
+                android:layout_below="@+id/productAttr"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="10dp"
+                android:ellipsize="end"
+                android:maxLines="2"
+                android:text="儿童节活动"
+                android:textSize="13sp" />
+
 
             <RelativeLayout
                 android:layout_width="match_parent"

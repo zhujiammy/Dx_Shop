@@ -17,6 +17,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +36,12 @@ import android.widget.Toast;
 
 
 import com.bumptech.glide.Glide;
+import com.example.zhujia.dx_shop.Activity.NewProduct;
+import com.example.zhujia.dx_shop.Activity.ProductDetailsActivity;
+import com.example.zhujia.dx_shop.Activity.ProductTypeActivity;
+import com.example.zhujia.dx_shop.Activity.SecondkillActivity;
+import com.example.zhujia.dx_shop.Adapter.GoodsListRecyclerViewAdapter;
+import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FixedGridLayout;
 import com.example.zhujia.dx_shop.Tools.FragmentUserVisibleController;
@@ -42,6 +50,9 @@ import com.example.zhujia.dx_shop.Tools.MaskableImageView;
 import com.example.zhujia.dx_shop.Tools.MyScrollView;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
+import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
+import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
 import com.youth.banner.Banner;
 import com.youth.banner.BannerConfig;
 import com.youth.banner.Transformer;
@@ -62,13 +73,14 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by DXSW5 on 2018/3/14.
  */
 
-public class HomePage extends Fragment implements View.OnClickListener, FragmentUserVisibleController.UserVisibleCallback{
+public class HomePage extends Fragment implements View.OnClickListener, FragmentUserVisibleController.UserVisibleCallback,OnRefreshListener,OnLoadMoreListener {
 
     private View view;
     private Banner banner;
     private ViewGroup.LayoutParams lp;
     private TextView MSG,QR;
 
+    private Handler mHandler;
     private List<String>list;
     private MyScrollView scrolll;
     private RelativeLayout line;
@@ -79,6 +91,15 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
     private FragmentUserVisibleController userVisibleController;
     private LinearLayout lin_center,ggw;
     private LayoutInflater inflater;
+    private ImageView newproduct;
+    private SuperRefreshRecyclerView recyclerView;
+    private GoodsListRecyclerViewAdapter adapter;
+    private List<Data> mListData=new ArrayList<>();
+    JSONObject reslutJSONObject;
+    JSONArray contentjsonarry;
+    private Intent intent;
+    private ImageView Secondkill;
+
 
     public HomePage(){
         userVisibleController = new FragmentUserVisibleController(this, this);
@@ -97,9 +118,152 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
         initUI();
         getposter();
         getadvert();
+        loaddata();//加载列表数据
+        adapter=new GoodsListRecyclerViewAdapter(getData(),getActivity());
         return view;
     }
 
+    private void loaddata(){
+        new HttpUtils().Get(Constant.APPURLS+"index/index/product",new HttpUtils.HttpCallback() {
+            @Override
+            public void onSuccess(String data) {
+                // TODO Auto-generated method stub
+                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                Message msg= Message.obtain(
+                        mHandler,2,data
+                );
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(String msg) {
+                Log.e("TAG", "onError: "+msg );
+            }
+
+        });
+    }
+
+    @SuppressLint("HandlerLeak")
+    private List<Data>getData(){
+        mHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+
+                try{
+                    switch (msg.what) {
+                        case 0:
+                            JSONObject object=new JSONObject(msg.obj.toString());
+                            JSONArray objectarray=object.getJSONArray("object");
+                            list=new ArrayList<>();
+                            for(int i=0;i<objectarray.length();i++){
+                                JSONObject object1=objectarray.getJSONObject(i);
+                                list.add(Constant.loadimag+object1.getString("phoneUrl"));
+                            }
+
+                            //设置图片加载器
+                            banner.setImageLoader(new GlideImageLoader());
+                            banner.setDelayTime(3000);
+                            //设置图片集合
+                            banner.setImages(list);
+                            //banner设置方法全部调用完毕时最后调用
+                            banner.start();
+                            break;
+
+                        case 1:
+                            JSONObject objects=new JSONObject(msg.obj.toString());
+                            JSONArray objectarrays=objects.getJSONArray("object");
+                            Log.e("TAG", "handleMessage: "+objectarrays.length() );
+                            for(int i=0;i<objectarrays.length();i++){
+                                View views = View.inflate(getActivity(),R.layout.advertisingposition,null);
+                                LinearLayout linearLayout=(LinearLayout)views.findViewById(R.id.lin2);
+                                JSONObject object1=objectarrays.getJSONObject(i);
+                                JSONArray list=object1.getJSONArray("list");
+                                for(int j=0;j<list.length();j++){
+
+                                    View viewd = View.inflate(getActivity(),R.layout.advertisement,null);
+                                    final JSONObject object2=list.getJSONObject(j);
+                                    float wei=object2.getInt("proportion");
+                                    LinearLayout.LayoutParams weight1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, wei);
+                                    ImageView imageView=(ImageView)viewd.findViewById(R.id.images);
+                                    Glide.with(getActivity()).load(Constant.loadimag+object2.getString("imgUrl")).into(imageView);
+                                    final String linkUrl=object2.getString("linkUrl");
+                                    viewd.setLayoutParams(weight1);
+                                    linearLayout.addView(viewd);
+
+                                    imageView.setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View v) {
+                                            Intent intent=new Intent(getActivity(),ProductTypeActivity.class);
+                                            intent.putExtra("linkUrl",linkUrl);
+                                            startActivity(intent);
+                                        }
+                                    });
+                                }
+                                ggw.addView(views);
+                            }
+                            break;
+
+                        case 2:
+                            //返回item类型数据
+                            reslutJSONObject=new JSONObject(msg.obj.toString());
+                            mListData.clear();
+                            contentjsonarry=reslutJSONObject.getJSONArray("object");
+                            fillDataToList(contentjsonarry);
+                            recyclerView.setAdapter(adapter);
+                            adapter.setType(1);
+                            adapter.notifyDataSetChanged();
+                            recyclerView.showData();
+                            recyclerView.setRefreshing(false);
+                            adapter.setOnitemClickListener(new GoodsListRecyclerViewAdapter.OnitemClickListener() {
+                                @Override
+                                public void onItemClick(View view, int position) {
+                                    intent =new Intent(getActivity(),ProductDetailsActivity.class);
+                                    intent.putExtra("id",mListData.get(position).getId());
+                                    startActivity(intent);
+                                }
+                            });
+                            break;
+
+                    }
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }
+        };
+        return mListData;
+    }
+
+
+    private void fillDataToList(JSONArray data) throws JSONException {
+
+        Data rechargData = null;
+        for (int i = 0; i < data.length(); i++) {
+            rechargData = new Data();
+            JSONObject object = data.getJSONObject(i);
+            rechargData.setId(object.getString("id"));
+            rechargData.setModel_img(object.getString("model_img"));
+            rechargData.setOriginal_img(object.getString("original_img"));
+            rechargData.setCatalog_name(object.getString("catalog_name"));
+            rechargData.setType_name(object.getString("type_name"));
+            rechargData.setBrand_name(object.getString("brand_name"));
+            rechargData.setModel_no(object.getString("model_no"));
+            rechargData.setSale_price(object.getString("sale_price"));
+            rechargData.setSmall_img(object.getString("small_img"));
+            rechargData.setCatalog_id(object.getString("catalog_id"));
+            rechargData.setModel_name(object.getString("model_name"));
+            rechargData.setSeries_name(object.getString("series_name"));
+            rechargData.setModel_title(object.getString("model_title"));
+            rechargData.setStatus(object.getString("status"));
+            if(!object.isNull("promotionTitle")){
+                rechargData.setPromotionTitle(object.getString("promotionTitle"));
+            }else {
+                rechargData.setPromotionTitle("null");
+            }
+            mListData.add(rechargData);
+        }
+
+    }
 
 
     private void getposter(){
@@ -145,64 +309,7 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
 
     }
 
-    @SuppressLint("HandlerLeak")
-    private Handler mHandler=new Handler(){
 
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            try{
-                switch (msg.what) {
-
-                    case 0:
-                       JSONObject object=new JSONObject(msg.obj.toString());
-                       JSONArray objectarray=object.getJSONArray("object");
-                        list=new ArrayList<>();
-                       for(int i=0;i<objectarray.length();i++){
-                           JSONObject object1=objectarray.getJSONObject(i);
-                           list.add(Constant.loadimag+object1.getString("phoneUrl"));
-                       }
-
-                        //设置图片加载器
-                        banner.setImageLoader(new GlideImageLoader());
-                        banner.setDelayTime(3000);
-                        //设置图片集合
-                        banner.setImages(list);
-                        //banner设置方法全部调用完毕时最后调用
-                        banner.start();
-                        break;
-
-                    case 1:
-                        JSONObject objects=new JSONObject(msg.obj.toString());
-                        JSONArray objectarrays=objects.getJSONArray("object");
-                        Log.e("TAG", "handleMessage: "+objectarrays.length() );
-                        for(int i=0;i<objectarrays.length();i++){
-                            View views = View.inflate(getActivity(),R.layout.advertisingposition,null);
-                            LinearLayout linearLayout=(LinearLayout)views.findViewById(R.id.lin2);
-                            JSONObject object1=objectarrays.getJSONObject(i);
-                            JSONArray list=object1.getJSONArray("list");
-                            for(int j=0;j<list.length();j++){
-                                View viewd = View.inflate(getActivity(),R.layout.advertisement,null);
-                                JSONObject object2=list.getJSONObject(j);
-                                float wei=object2.getInt("proportion");
-                                LinearLayout.LayoutParams weight1 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, wei);
-                                ImageView imageView=(ImageView)viewd.findViewById(R.id.images);
-                                Glide.with(getActivity()).load(Constant.loadimag+object2.getString("imgUrl")).into(imageView);
-                                viewd.setLayoutParams(weight1);
-                                linearLayout.addView(viewd);
-                            }
-                            ggw.addView(views);
-                        }
-                        break;
-
-                }
-
-
-            }catch (JSONException e){
-                e.printStackTrace();
-            }
-        }
-    };
 
     private void initUI(){
         scrolll=(MyScrollView)view.findViewById(R.id.scrolll);
@@ -211,15 +318,24 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
         seach_text=(TextView)view.findViewById(R.id.seach_text);
         QR=(TextView)view.findViewById(R.id.QR);
         MSG=(TextView)view.findViewById(R.id.MSG);
+        Secondkill=(ImageView)view.findViewById(R.id.Secondkill);
+        Secondkill.setOnClickListener(this);
         banner = (Banner) view.findViewById(R.id.banner);
-        lin_center=(LinearLayout)view.findViewById(R.id.lin_center);
+       // lin_center=(LinearLayout)view.findViewById(R.id.lin_center);
         ggw=(LinearLayout)view.findViewById(R.id.ggw);
-
-
+        newproduct=(ImageView)view.findViewById(R.id.newproduct);
+        newproduct.setOnClickListener(this);
+        //初始化
+        recyclerView= (SuperRefreshRecyclerView)view.findViewById(R.id.recyclerview);
+        recyclerView.inits(new GridLayoutManager(getActivity(),2),this,this);
+        recyclerView.setRefreshEnabled(true);
+        recyclerView.setLoadingMoreEnable(true);
+        recyclerView.setHasFixedSize(true);
+       /*
         for(int i=0;i<2;i++){
             View views = View.inflate(getActivity(),R.layout.lin_center,null);
             lin_center.addView(views);
-        }
+        }*/
 
 
     }
@@ -248,6 +364,14 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
     @Override
     public void onClick(View v) {
 
+        if(v==newproduct){
+            Intent intent=new Intent(getActivity(),NewProduct.class);
+            startActivity(intent);
+        }
+        if(v==Secondkill){
+            intent=new Intent(getActivity(),SecondkillActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -444,4 +568,19 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
         }
     };
 
+    @Override
+    public void onLoadMore() {
+
+    }
+
+    public void onRefresh() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                mListData.clear();
+                adapter.notifyDataSetChanged();
+                loaddata();
+            }
+        },1000);
+    }
 }

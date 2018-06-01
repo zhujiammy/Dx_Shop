@@ -227,13 +227,16 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             Intent intent=new Intent(LoginActivity.this,MainActivity.class);
             if(intent_page.getStringExtra("page").equals("2")){
                 intent.putExtra("select","2");
+                startActivity(intent);
+                finish();
             }else if(intent_page.getStringExtra("page").equals("3")){
                 intent.putExtra("select","3");
+                startActivity(intent);
+                finish();
             }else if(intent_page.getStringExtra("page").equals("x")){
                 finish();
             }
-            startActivity(intent);
-            finish();
+
 
         }
     };

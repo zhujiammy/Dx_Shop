@@ -1,5 +1,4 @@
 package com.example.zhujia.dx_shop.Tools;
-
 /**
  * 用于存放倒计时时间
  * @author bnuzlbs-xuboyu 2017/4/5.
@@ -36,5 +35,7 @@ public class App extends Application {
         super.onCreate();
         context=getApplicationContext();
         Fresco.initialize(this);
+        //YoukuPlayerConfig.setClientIdAndSecret(*//*请修改成你自己的clientId和clientSecret*//*"792b1d08a5348d0d","9a98ce3841ae9f686fbea940a93b8167");
+
     }
 }

@@ -2,6 +2,7 @@ package com.example.zhujia.dx_shop.Fragment;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.example.zhujia.dx_shop.Activity.OrderDetailsActivity;
 import com.example.zhujia.dx_shop.Adapter.AddressManagementAdapter;
 import com.example.zhujia.dx_shop.Adapter.AllOrderAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
@@ -50,7 +52,8 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
     private AllOrderAdapter adapter;
     private List<OrderData> mListData=new ArrayList<>();
     private Handler mHandler;
-
+    private String OrderStatus;
+    private Context context;
     @SuppressLint("WrongConstant")
     @Nullable
     @Override
@@ -61,8 +64,10 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
                 Context.MODE_APPEND);
         TOKEN=sharedPreferences.getString("token","");
         loginUserId=sharedPreferences.getString("userId","");
+        loadorderstatu();//加载订单状态
         loaddata();
-        adapter=new AllOrderAdapter(getActivity(),getData());
+        context=getActivity();
+        adapter=new AllOrderAdapter(AllOrder.this,getData());
         return view;
     }
 
@@ -88,6 +93,26 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
         });*/
     }
 
+
+    private void loadorderstatu(){
+        new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/enums",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+            @Override
+            public void onSuccess(String data) {
+                // TODO Auto-generated method stub
+                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                Message msg= Message.obtain(
+                        mHandler,1,data
+                );
+                mHandler.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(String msg) {
+                Log.e("TAG", "onError: "+msg );
+            }
+
+        });
+    }
 
     private void loaddata(){
         new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/list",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
@@ -119,7 +144,6 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
         } else {
             // 相当于Fragment的onResume
             Log.e("TAG", "onHiddenChanged: "+"全部订单可见" );
-            loaddata();
         }
     }
 
@@ -147,14 +171,16 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
                             recyclerView.showData();
                             recyclerView.setRefreshing(false);
                             recyclerView.setLoadingMore(false);
+
                             break;
 
 
                         case 1:
                             JSONObject header=new JSONObject(msg.obj.toString());
                             if(header.getString("code").equals("200")){
-                                loaddata();
+                                OrderStatus=header.getString("object");
                             }
+
                             break;
 
                         case 2:
@@ -171,6 +197,13 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
             }
         };
         return mListData;
+    }
+
+
+    public void  orderDetails(int position){
+        Intent intent=new Intent(getActivity(),OrderDetailsActivity.class);
+        intent.putExtra("orderNo",mListData.get(position).getOrderNo());
+        startActivity(intent);
     }
 
     @SuppressLint("NewApi")
@@ -206,6 +239,7 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
             rechargData.setReturnTime(order.getString("returnTime"));
             rechargData.setCancelTime(order.getString("cancelTime"));
             rechargData.setDiscountInfo(order.getString("discountInfo"));
+            rechargData.setStatuslist(OrderStatus);
             mListData.add(rechargData);
         }
 
@@ -223,6 +257,7 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
+                adapter.notifyDataSetChanged();
                 mListData.clear();
                 loaddata();
             }

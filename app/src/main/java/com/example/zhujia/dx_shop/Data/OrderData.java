@@ -48,7 +48,16 @@ public class OrderData {
     private String orderItems;
 
     private String num;
+    private String statuslist;
 
+
+    public String getStatuslist() {
+        return statuslist;
+    }
+
+    public void setStatuslist(String statuslist) {
+        this.statuslist = statuslist;
+    }
 
     public String getNum() {
         return num;

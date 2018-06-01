@@ -2,9 +2,11 @@ package com.example.zhujia.dx_shop.Tools;
 
 import android.text.TextUtils;
 
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -45,9 +47,93 @@ public class insertComma {
         return res;
     }
 
+    /*
+     * 将时间转换为时间戳
+     */
+    public static String dateToStamp(String s) throws ParseException {
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = simpleDateFormat.parse(s);
+        long ts = date.getTime();
+        res = String.valueOf(ts);
+        return res;
+    }
+    public static String secToTime(int time) {
+        String timeStr = null;
+        int hour = 0;
+        int minute = 0;
+        int second = 0;
+        if (time <= 0)
+            return "00:00";
+        else {
+            minute = time / 60;
+
+                hour = minute / 60;
+                if (hour > 24){
+                    hour = ((time / 60) / 60) % 24;
+                    long day = (((time / 60) / 60) / 24);
+                    minute = minute % 60;
+                    second = time % 60;
+                    timeStr =day + "天"+ unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
+                }else {
+                    minute = minute % 60;
+                    second = time - hour * 3600 - minute * 60;
+                    timeStr = unitFormat(hour) + ":" + unitFormat(minute) + ":" + unitFormat(second);
+                }
+
+
+
+
+        }
+        return timeStr;
+    }
+
+    public static double div(double value1, double value2, int scale) throws IllegalAccessException {
+        //如果精确范围小于0，抛出异常信息
+        if (scale < 0) {
+            throw new IllegalAccessException("精确度不能小于0");
+        }
+        BigDecimal b1 = new BigDecimal(Double.toString(value1));
+        BigDecimal b2 = new BigDecimal(Double.toString(value2));
+        //默认保留两位会有错误，这里设置保留小数点后4位
+        return b1.divide(b2, scale, BigDecimal.ROUND_HALF_UP).doubleValue();
+    }
+
+    public static String unitFormat(int i) {
+        String retStr = null;
+        if (i >= 0 && i < 10)
+            retStr = "0" + Integer.toString(i);
+        else
+            retStr = "" + i;
+        return retStr;
+    }
+    public static String formatSeconds(long seconds) {
+        String timeStr = seconds + "秒";
+            long second = seconds % 60;
+            long min = seconds / 60;
+                min = (seconds / 60) % 60;
+                long hour = (seconds / 60) / 60;
+                timeStr = hour + ":" + min + ":" + second;
+                if (hour > 24) {
+                    hour = ((seconds / 60) / 60) % 24;
+                    long day = (((seconds / 60) / 60) / 24);
+                    timeStr = day + "天" + hour + ":" + min + ":" + second;
+                }
+        return timeStr;
+    }
+
     public static String stampToDates(String s){
         String res;
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        long lt = new Long(s);
+        Date date = new Date(lt);
+        res = simpleDateFormat.format(date);
+        return res;
+    }
+
+    public static String stampToDated(String s){
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm:ss");
         long lt = new Long(s);
         Date date = new Date(lt);
         res = simpleDateFormat.format(date);

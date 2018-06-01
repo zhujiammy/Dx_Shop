@@ -4,14 +4,14 @@
     android:orientation="vertical"
     android:descendantFocusability="blocksDescendants"
     android:layout_height="wrap_content"
-    android:background="@color/def_bg"
+    android:background="@color/white"
     android:clickable="true"
-    android:paddingBottom="1dp">
+    >
 
 
     <LinearLayout
         android:background="@color/def_bg"
-        android:id="@+id/lin_check"
+        android:id="@+id/lin_btn"
         android:gravity="center_vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,6 +62,7 @@
                         android:layout_marginRight="10dp"
                         android:ellipsize="end"
                         android:maxLines="2"
+                        android:textColor="@color/base"
                         android:text="【红色sdfdfdfdfd】【155/XS】"
                         android:textSize="11sp" />
                 </LinearLayout>
@@ -96,6 +97,7 @@
                             android:background="@null"
                             android:gravity="center"
                             android:text="1"
+                            android:textColor="@color/BLAK"
                             android:digits="0123456789"
                             android:textSize="14sp"/>
                     </RelativeLayout>

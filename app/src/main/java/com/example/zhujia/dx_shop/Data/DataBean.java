@@ -15,7 +15,28 @@ public class DataBean
 
 	private String productAttr;
 
+	private String productType;
+
 	private String ID;
+
+	private String promotionTitle;
+
+
+	public String getProductType() {
+		return productType;
+	}
+
+	public void setProductType(String productType) {
+		this.productType = productType;
+	}
+
+	public String getPromotionTitle() {
+		return promotionTitle;
+	}
+
+	public void setPromotionTitle(String promotionTitle) {
+		this.promotionTitle = promotionTitle;
+	}
 
 	public String getID() {
 		return ID;

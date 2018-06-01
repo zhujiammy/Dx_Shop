@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.view.View;
 
 /**
  * Created by DXSW5 on 2017/9/25.
@@ -16,6 +17,11 @@ public class WrapContentLinearLayoutManager extends LinearLayoutManager {
 
     public WrapContentLinearLayoutManager(Context context, int orientation, boolean reverseLayout) {
         super(context, orientation, reverseLayout);
+    }
+
+    @Override
+    public void onMeasure(RecyclerView.Recycler recycler, RecyclerView.State state, int widthSpec, int heightSpec) {
+        super.onMeasure(recycler, state, widthSpec, heightSpec);
     }
 
     public WrapContentLinearLayoutManager(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {

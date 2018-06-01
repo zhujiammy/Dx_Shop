@@ -119,9 +119,9 @@ public class MainActivity extends AppCompatActivity {
         Boolean user_first = sharedPreferences.getBoolean("FIRST", true);
         if(user_first&&LoginState.equals("yes")){
             sharedPreferences.edit().putBoolean("FIRST", false).commit();
-            intent=new Intent(getApplicationContext(), LongRunningService.class);
+        /*    intent=new Intent(getApplicationContext(), LongRunningService.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startService(intent);
+            startService(intent);*/
 
         }
 
@@ -209,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
                     transaction.show(typePage);
                     transaction.hide(shoppingCart_page);
                     transaction.hide(myPage);
-                    toolbar.setVisibility(View.VISIBLE);
+                    toolbar.setVisibility(View.GONE);
                     tvToolTitle.setText(getResources().getString(R.string.type));
                     transaction.commit();
                     break;
@@ -286,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
             if(intent.getStringExtra("select").equals("3")){
                 navigationController.setSelect(3);
             }
+
         }
 
         //init();

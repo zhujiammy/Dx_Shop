@@ -9,9 +9,14 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -31,6 +36,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.Activity.ConfirmationOrder;
 import com.example.zhujia.dx_shop.Data.DataBean;
+import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
@@ -71,7 +77,6 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
 
     private TextView mSelectNum; // 选中数量
 
-    private TextView mFavorite; // 移到收藏夹
 
     private TextView mDelete; // 删除 结算
 
@@ -80,11 +85,13 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
     private Handler mHandler;
 
     private LinearLayout emptyView;
+    private Toolbar toolbar;
     int maxId = 0;
 
     private SharedPreferences sharedPreferences;
     private String LoginState,TOKEN,loginUserId;
     private SparseArray<Boolean> mSelectState = new SparseArray<Boolean>();
+    private MenuItem item;
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -93,13 +100,24 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
         view=inflater.inflate(R.layout.shoppingcart_page,container,false);
         sharedPreferences =getActivity().getSharedPreferences("Session",
                 Context.MODE_APPEND);
-        TOKEN=sharedPreferences.getString("token","");
-        loginUserId=sharedPreferences.getString("userId","");
         initUI();
         initListener();
         return view;
     }
 
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        toolbar=(Toolbar)view.findViewById(R.id.toolbar);
+        ((AppCompatActivity) getActivity()).setSupportActionBar(toolbar);
+        toolbar.setTitle("");
+    }
 
 
 
@@ -111,9 +129,15 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
             Log.e("TAG", "onHiddenChanged: "+"购物车不可见" );
         } else {
             // 相当于Fragment的onResume
-            Log.e("TAG", "onHiddenChanged: "+"购物车不可见可见" );
+            Log.e("TAG", "onHiddenChanged: "+"购物车可见" );
+            TOKEN=sharedPreferences.getString("token","");
+            loginUserId=sharedPreferences.getString("userId","");
+            refreshListView();
+            mListData.clear();
             loaddata();
             mListData=getData();
+
+
         }
     }
 
@@ -129,7 +153,6 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
         mCheckAll = (CheckBox) view.findViewById(R.id.check_box);
         mPriceAll = (TextView) view.findViewById(R.id.tv_cart_total);
         mSelectNum = (TextView) view.findViewById(R.id.tv_cart_select_num);
-        mFavorite = (TextView) view.findViewById(R.id.tv_cart_move_favorite);
         mDelete = (TextView) view.findViewById(R.id.tv_cart_buy_or_del);
         mListView = (ListView) view.findViewById(R.id.listview);
         mListView.setSelector(R.drawable.list_selector);
@@ -175,9 +198,12 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
 
                            JSONObject reslutJSONObject=new JSONObject(msg.obj.toString());
                            if(reslutJSONObject.getString("code").equals("404")){
-
                                refreshListView();
-
+                               mSelectState.clear();
+                               totalPrice = 0;
+                               mSelectNum.setText("已选" + 0 + "件商品");
+                               mPriceAll.setText("￥" + 0.00 + "");
+                               mCheckAll.setChecked(false);
                            }
                             JSONArray resultlist=reslutJSONObject.getJSONArray("object");
                             DataBean data = null;
@@ -193,7 +219,13 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
                                 data.setProductAttr(object.getString("productAttr"));
                                 data.setSalePrice(object.getDouble("salePrice"));
                                 data.setImage(object.getString("image"));
+                                data.setProductType(object.getString("productType"));
                                 data.setQuantity(object.getInt("quantity"));
+                                if(!object.isNull("promotionTitle")){
+                                    data.setPromotionTitle(object.getString("promotionTitle"));
+                                }else {
+                                    data.setPromotionTitle("null");
+                                }
                                 result1.add(data);
                             }
                            refreshListView();
@@ -201,6 +233,24 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
 
                         case 2:
                             JSONObject reslutJSONObjects=new JSONObject(msg.obj.toString());
+                            break;
+                        case 3:
+                            JSONObject object=new JSONObject(msg.obj.toString());
+                            if(object.getString("code").equals("200")){
+                                Toast.makeText(getActivity(),"删除成功",Toast.LENGTH_SHORT).show();
+                                isBatchModel =true;
+                                item.setTitle(getResources().getString(R.string.menu_edit));
+                                mBottonLayout.setVisibility(View.VISIBLE);
+                                mDelete.setText(getResources().getString(R.string.menu_sett));
+                                refreshListView();
+                                mSelectState.clear();
+                                totalPrice = 0;
+                                mSelectNum.setText("已选" + 0 + "件商品");
+                                mPriceAll.setText("￥" + 0.00 + "");
+                                mCheckAll.setChecked(false);
+                            }else {
+                                Toast.makeText(getActivity(),"删除失败",Toast.LENGTH_SHORT).show();
+                            }
                             break;
                     }
 
@@ -311,11 +361,8 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
                     doDelete(ids);
                 } else
                 {
-
                     dosettlemetn();
-
                 }
-
                 break;
 
             default:
@@ -548,6 +595,12 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
             holder.productName.setText(data.getProductName());
             holder.productAttr.setText(data.getProductAttr());
             holder.salePrice.setText("￥" + new DecimalFormat("0.00").format(data.getSalePrice()));
+            if(data.getPromotionTitle().equals("null")){
+                holder.promotionTitle.setVisibility(View.GONE);
+            }else {
+                holder.promotionTitle.setText(data.getPromotionTitle());
+                holder.promotionTitle.setVisibility(View.VISIBLE);
+            }
             holder.quantity.setText(data.getQuantity() + "");
             Glide.with(getActivity()).load(Constant.loadimag+data.getImage()).into(holder.image);
 
@@ -582,6 +635,7 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
         ImageView add;
         ImageView red;
         Button del_btn;
+        TextView promotionTitle;
 
         public ViewHolder(View view)
         {
@@ -595,12 +649,14 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
             add = (ImageView) view.findViewById(R.id.iv_add);
             lin_check=(LinearLayout)view.findViewById(R.id.lin_check);
             del_btn=(Button)view.findViewById(R.id.btnDelete1);
+            promotionTitle=(TextView)view.findViewById(R.id.promotionTitle);
         }
     }
 
     private void doDelete(final List<Integer> ids)
     {
 
+        List<String>IDS=new LinkedList<String>();
         for (int i = 0; i < mListData.size(); i++)
         {
             long dataId = mListData.get(i).getId();
@@ -610,27 +666,55 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
 
                 if (dataId == deleteId)
                 {
-                    String a= String.valueOf(ids.get(i));
+                    String a= String.valueOf(mListData.get(j).getID());
                     Log.e(TAG, "doDelete: "+a );
-
-
-
-
+                    IDS.add(a);
                     mListData.remove(i);
-
                     i--;
                     ids.remove(j);
                     j--;
                 }
             }
         }
-        refreshListView();
-        mSelectState.clear();
-        totalPrice = 0;
-        mSelectNum.setText("已选" + 0 + "件商品");
-        mPriceAll.setText("￥" + 0.00 + "");
-        mCheckAll.setChecked(false);
 
+        DelShop(IDS.toString());
+
+
+    }
+    @SuppressLint("NewApi")
+    private void DelShop(String id){
+        try {
+            String ids=id.replace("[","").replace("]","");
+            Log.e("TAG", "length: "+ids.length());
+            if(ids.length()==0){
+                Toast.makeText(getActivity(),"还没选择需要删除的物品",Toast.LENGTH_SHORT).show();
+            }else {
+
+                String [] stringArr= ids.split(",");
+                JSONArray j=new JSONArray(stringArr);
+                final String params=j.toString().replaceAll( "\\\\","").replace(" ", "");
+                Log.e("TAG", "ids: "+params);
+                //新增
+                new HttpUtils().postJson(Constant.APPURLS+"order/shopping/deleByIds",params,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+                    @Override
+                    public void onSuccess(String data) {
+                        // TODO Auto-generated method stub
+                        com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+
+                        Message msg= Message.obtain(
+                                mHandler,3,data
+                        );
+                        mHandler.sendMessage(msg);
+                    }
+
+                });
+            }
+
+
+
+        }catch (JSONException e){
+            e.printStackTrace();
+        }
     }
 
     private void dosettlemetn(){
@@ -643,8 +727,10 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
         List<Integer> ids=new LinkedList<>();
         List<String>IDS=new LinkedList<String>();
         List<String>ProductAttrs=new LinkedList<String>();
+        List<String>promotionTitles=new LinkedList<>();
+        List<String>productTypes=new LinkedList<>();
         HashMap<Integer, Boolean> state =mListAdapter.state;
-        String imgurl1 = null,content=null,total=null,productAttr=null;
+        String imgurl1 = null,content=null,total=null,productAttr=null,promotionTitle=null,productType=null;
         int id;
         String ID;
         int num=0;
@@ -655,9 +741,11 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
                 content=mListData.get(j).getProductName();
                 num= mListData.get(j).getQuantity();
                 price=mListData.get(j).getSalePrice();
+                productType=mListData.get(j).getProductType();
                 total= String.valueOf(mListData.get(j).getQuantity()*mListData.get(j).getSalePrice());
                 id= mListData.get(j).getId();
                 ID=mListData.get(j).getID();
+                promotionTitle=mListData.get(j).getPromotionTitle();
                 productAttr=mListData.get(j).getProductAttr();
 
                 imgurls.add(imgurl1);
@@ -668,12 +756,15 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
                 ids.add(id);
                 IDS.add(ID);
                 ProductAttrs.add(productAttr);
+                promotionTitles.add(promotionTitle);
+                productTypes.add(productType);
             }
 
         }
         if(imgurls.isEmpty()){
 
         }else {
+                getActivity().finish();
                Intent intent=new Intent(getActivity(),ConfirmationOrder.class);
                 intent.putExtra("image",imgurls.toString());
                 intent.putExtra("quantity",nums.toString());
@@ -682,11 +773,47 @@ public class ShoppingCart_Page extends Fragment implements View.OnClickListener 
                 intent.putExtra("productName",contents.toString());
                 intent.putExtra("productAttr",ProductAttrs.toString());
                 intent.putExtra("totals",totals.toString());
+                intent.putExtra("promotionTitle",promotionTitles.toString());
+                intent.putExtra("productType",productTypes.toString());
                 startActivity(intent);
+        }
+
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.meun_edit, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        this.item=item;
+        int id = item.getItemId();
+        //noinspection SimplifiableIfStatement
+        if(id==R.id.edit_btn){
+            isBatchModel = !isBatchModel;
+            if (isBatchModel)
+            {
+                item.setTitle(getResources().getString(R.string.menu_enter));
+                mDelete.setText(getResources().getString(R.string.menu_del));
+                mBottonLayout.setVisibility(View.INVISIBLE);
+            } else
+            {
+                item.setTitle(getResources().getString(R.string.menu_edit));
+                mBottonLayout.setVisibility(View.VISIBLE);
+                mDelete.setText(getResources().getString(R.string.menu_sett));
+            }
+
         }
 
 
 
+        return super.onOptionsItemSelected(item);
     }
 
 }

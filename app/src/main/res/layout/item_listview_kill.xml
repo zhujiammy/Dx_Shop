@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:descendantFocusability="blocksDescendants"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:id="@+id/swipe_menu">
+
+
+    <LinearLayout
+        android:layout_marginTop="5dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/lin_btn"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--     <ImageView
+                     android:padding="5dp"
+                     android:src="@mipmap/mrt"
+                     android:id="@+id/model_img"
+                     android:layout_width="130dp"
+                     android:layout_height="130dp" />-->
+            <com.lid.lib.LabelImageView
+                android:padding="5dp"
+                android:src="@mipmap/mrt"
+                android:id="@+id/model_img"
+                android:layout_width="130dp"
+                android:layout_height="130dp"
+                android:scaleType="centerCrop"
+                />
+
+            <LinearLayout
+                android:gravity="center_vertical"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+                <TextView
+                    android:textSize="15sp"
+                    android:id="@+id/model_title"
+                    android:textColor="@color/BLAK"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="OH/RZ201"
+                    />
+                <TextView
+                    android:textSize="15sp"
+                    android:id="@+id/series_name"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="3dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="女神款"
+                    />
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <TextView
+                        android:id="@+id/crushsale_price"
+                        android:gravity="center_vertical"
+                        android:textSize="23sp"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/del_color"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="¥2199"
+                        />
+                    <TextView
+                        android:id="@+id/sale_price"
+                        android:gravity="left|center"
+                        android:textSize="15sp"
+                        android:layout_marginLeft="5dp"
+                        android:textColor="@color/base"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="¥2199"
+                        />
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <Button
+                                android:id="@+id/goshop"
+                                android:layout_alignParentRight="true"
+                                android:layout_marginRight="10dp"
+                                android:layout_marginTop="3dp"
+                                android:layout_marginBottom="3dp"
+                                android:background="@drawable/buttonstyle"
+                                android:textColor="@color/white"
+                                android:text="去秒杀"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent" />
+                        </RelativeLayout>
+
+
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp">
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/title"
+                            android:gravity="center_vertical"
+                            android:textSize="12sp"
+                            android:layout_marginLeft="5dp"
+                            android:textColor="@color/del_color"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="距开始："
+                            />
+                        <TextView
+                            android:id="@+id/time"
+                            android:gravity="center_vertical"
+                            android:textSize="15sp"
+                            android:layout_marginLeft="5dp"
+                            android:textColor="@color/del_color"
+                            android:layout_width="100dp"
+                            android:layout_height="match_parent"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:id="@+id/ysh"
+                            android:layout_marginRight="4dp"
+                            android:gravity="center"
+                            android:textSize="10sp"
+                            android:text="已售20%"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent" />
+                        <ProgressBar
+                            android:layout_gravity="center"
+                            android:id="@+id/progesss1"
+                            android:progressDrawable="@drawable/custom_progress"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:indeterminateOnly="false"
+                            android:max="100"
+                            android:layout_marginRight="10dp"
+                            android:maxHeight="50dp"
+                            android:minHeight="16dp"
+                            android:progress="55"
+                            />
+
+                    </LinearLayout>
+
+
+
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+        </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="#f4f4f4" />
+    </LinearLayout>
+
+</LinearLayout>

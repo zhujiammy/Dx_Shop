@@ -37,6 +37,16 @@ public class Data  {
     private String productItemListid;
     private String productItemListsalePrice;
     private String productModelAttrs;
+    private String promotionTitle;
+
+
+    public String getPromotionTitle() {
+        return promotionTitle;
+    }
+
+    public void setPromotionTitle(String promotionTitle) {
+        this.promotionTitle = promotionTitle;
+    }
 
     public String getProductItemListid() {
         return productItemListid;

@@ -2,20 +2,36 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:background="@color/def_bg"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <LinearLayout
 
+        android:background="@color/white"
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="100dp">
+        android:layout_height="wrap_content">
+        <RelativeLayout
+            android:background="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="70dp">
 
+            <ImageView
+                android:id="@+id/close_pop"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp"
+                android:layout_alignParentRight="true"
+                android:src="@mipmap/close"
+                android:layout_marginLeft="20dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                />
+
+        </RelativeLayout>
         <LinearLayout
             android:id="@+id/alipay"
             android:background="@color/white"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="70dp">
 
             <ImageView
                 android:layout_marginLeft="20dp"
@@ -24,6 +40,7 @@
                 android:src="@drawable/alipay"
                 />
             <TextView
+                android:textColor="@color/BLAK"
                 android:paddingLeft="10dp"
                 android:gravity="center_vertical"
                 android:textSize="20sp"
@@ -33,13 +50,16 @@
                 />
 
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/def_bg"
+            android:layout_height="2dp"/>
 
         <LinearLayout
             android:background="@color/white"
             android:layout_marginTop="2dp"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="70dp">
             <ImageView
                 android:layout_marginLeft="20dp"
                 android:layout_width="50dp"
@@ -47,6 +67,7 @@
                 android:src="@drawable/wechat"
                 />
             <TextView
+                android:textColor="@color/BLAK"
                 android:paddingLeft="10dp"
                 android:gravity="center_vertical"
                 android:textSize="20sp"
@@ -55,6 +76,10 @@
                 android:text="微信支付"
                 />
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:background="@color/def_bg"
+            android:layout_height="2dp"/>
 
     </LinearLayout>
 
