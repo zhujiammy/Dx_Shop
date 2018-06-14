@@ -39,13 +39,16 @@ import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.example.zhujia.dx_shop.Activity.AddressManagementActivity;
 import com.example.zhujia.dx_shop.Activity.OrderDetailsActivity;
 import com.example.zhujia.dx_shop.Activity.ProductDetailskillActivity;
+import com.example.zhujia.dx_shop.Activity.WxpayActivity;
 import com.example.zhujia.dx_shop.Data.RecommendGoodsBean;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FNRadioGroup;
 import com.example.zhujia.dx_shop.Tools.GlideImageLoader;
 import com.example.zhujia.dx_shop.Tools.GoodsConfigFragmentKill;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.SlideDetailsLayout;
 import com.example.zhujia.dx_shop.Tools.insertComma;
 import com.example.zhujia.dx_shop.util.PayResult;
@@ -76,7 +79,8 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
     private View v_tab_cursor;
     public FrameLayout fl_content;
     public LinearLayout  ll_activity, ll_recommend, ll_pull_up,select_address;
-
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
     private ImageView img;
     private TextView itemNo;
     /** 当前商品详情数据页的索引分别是图文详情、规格参数 */
@@ -113,7 +117,7 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
     private String switchs;
     private Intent intent;
     private int quantity;
-    private LinearLayout alipay;
+    private LinearLayout alipay,wxpay;
     private static final int SDK_PAY_FLAG = 4;
     private View rootview;
     public static final int  INTENT=1004;
@@ -187,6 +191,8 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
         rootview = rootView.findViewById(R.id.root_main);
         alipay=(LinearLayout)customView.findViewById(R.id.alipay);
         alipay.setOnClickListener(this);
+        wxpay=(LinearLayout)customView.findViewById(R.id.wxpay);
+        wxpay.setOnClickListener(this);
         close_pop=(ImageView)customView.findViewById(R.id.close_pop);
         close_pop.setOnClickListener(this);
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -362,6 +368,8 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
                 startActivityForResult(intent,INTENT);
                 break;
             case R.id.alipay:
+                dialog1=new LoadingAlertDialog(getActivity());
+                dialog1.show("请稍等...");
                 //支付宝支付
                 new HttpUtils().Post(Constant.APPURLS+"order/alipay/"+orderNo,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
 
@@ -372,6 +380,26 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
 
                         Message msg= Message.obtain(
                                 mHandler,3,data
+                        );
+                        mHandler.sendMessage(msg);
+                    }
+
+                });
+                break;
+
+            case R.id.wxpay:
+                dialog1=new LoadingAlertDialog(getActivity());
+                dialog1.show("请稍等...");
+                //微信支付
+                new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/weixin/h5/"+orderNo,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+
+                    @Override
+                    public void onSuccess(String data) {
+                        // TODO Auto-generated method stub
+                        com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+
+                        Message msg= Message.obtain(
+                                mHandler,5,data
                         );
                         mHandler.sendMessage(msg);
                     }
@@ -447,21 +475,29 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
 
     //请求商品详情
     private void loaddata(){
-        Log.e("TAG", "loaddata: "+Constant.APPURLS+"product/"+id );
-        new HttpUtils().GetOrderStatu(Constant.APPURLS+"promotion/crush/"+id,"","",new HttpUtils.HttpCallback() {
+        dialog1=new LoadingAlertDialog(getActivity());
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(getActivity())){
+            Log.e("TAG", "loaddata: "+Constant.APPURLS+"product/"+id );
+            new HttpUtils().GetOrderStatu(Constant.APPURLS+"promotion/crush/"+id,"","",new HttpUtils.HttpCallback() {
 
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
 
-                Message msg= Message.obtain(
-                        mHandler,1,data
-                );
-                mHandler.sendMessage(msg);
-            }
+                    Message msg= Message.obtain(
+                            mHandler,1,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -539,15 +575,18 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
+                        dialog1.dismiss();
                         break;
                     case 2:
                         JSONObject jsonObject1=new JSONObject(msg.obj.toString());
                         if(jsonObject1.getString("code").equals("200")){
+                            dialog1.dismiss();
                             orderNo=jsonObject1.getString("object");
                             popWindow.showAtLocation(rootview, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                             backgroundAlpha(0.5f);
                         }
                         if(jsonObject1.getString("code").equals("500")){
+                            dialog1.dismiss();
                             Toast.makeText(getActivity(),jsonObject1.getString("object"),Toast.LENGTH_SHORT).show();
                         }
                         break;
@@ -572,6 +611,7 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
 
                         Thread payThread = new Thread(payRunnable);
                         payThread.start();
+                        dialog1.dismiss();
                         break;
 
                     case SDK_PAY_FLAG: {
@@ -599,8 +639,19 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
                             getActivity().finish();
                         }
                         break;
-                    }
 
+                    }
+                    case 5:
+                        Log.e("TAG", "handleMessage: "+msg.obj.toString());
+                        JSONObject object1=new JSONObject(msg.obj.toString());
+                        if(object1.getString("code").equals("200")){
+                            dialog1.dismiss();
+                            intent=new Intent(getActivity(),WxpayActivity.class);
+                            intent.putExtra("msg",object1.getString("msg"));
+                            startActivity(intent);
+                        }
+
+                        break;
                 }
             }catch (JSONException e){
                 e.printStackTrace();
@@ -614,7 +665,8 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
             Toast.makeText(getActivity(),"活动尚未开始！",Toast.LENGTH_SHORT).show();
         }else {
             //提交订单
-
+            dialog1=new LoadingAlertDialog(getActivity());
+            dialog1.show("请稍等...");
             Log.e("TAG", "onClick: "+TOKEN+"  "+loginUserId);
             try {
                 JSONObject object = new JSONObject();

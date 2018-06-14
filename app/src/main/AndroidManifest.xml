@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.zhujia.dx_shop">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -67,6 +68,7 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".MainActivity"
+            android:windowSoftInputMode="adjustNothing"
             android:theme="@style/AppTheme1">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -108,6 +110,44 @@
         </activity>
         <activity
             android:screenOrientation="portrait"
+            android:name=".Activity.SearchActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.AccountsecurityActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.WxpayActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.ForgetPasswordActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.SearchProduct"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.InvoiceActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
             android:name=".Activity.RegisterActivity"
             android:theme="@style/AppTheme1">
 
@@ -119,9 +159,23 @@
 
         </activity>
         <activity
+            android:name=".wxapi.WXPayEntryActivity"
+            android:exported="true"
+            android:launchMode="singleTop"/>
+        <activity
             android:screenOrientation="portrait"
             android:name=".Activity.OrderDetailsActivity"
             android:theme="@style/AppTheme1">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+
+                <data
+                    android:host="platformapi.startapp.redeemcode"
+                    android:scheme="uplusgo"/>
+            </intent-filter>
+
 
         </activity>
         <activity

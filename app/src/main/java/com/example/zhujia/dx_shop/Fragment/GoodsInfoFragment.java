@@ -53,9 +53,11 @@ import com.example.zhujia.dx_shop.Data.RecommendGoodsBean;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FNRadioGroup;
 import com.example.zhujia.dx_shop.Tools.GoodsConfigFragment;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.MRadioButton;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.SlideDetailsLayout;
 import com.gxz.PagerSlidingTabStrip;
 import com.hmy.popwindow.PopWindow;
@@ -134,6 +136,8 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
     private SharedPreferences sharedPreferences;
     private String id;
     private Bundle bundle;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
     View view2;
 
     @Override
@@ -378,6 +382,8 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
 
             case R.id.add_carts:
                 //加入购物车
+                dialog1=new LoadingAlertDialog(getActivity());
+                dialog1.show("请稍等...");
                 try {
                     JSONObject object = new JSONObject();
                     object.put("productItemId",productItemId);
@@ -465,21 +471,31 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
 
     //请求商品详情
     private void loaddata(){
-        Log.e("TAG", "loaddata: "+Constant.APPURLS+"product/"+id );
-        new HttpUtils().Post(Constant.APPURLS+"product/"+id,"","",new HttpUtils.HttpCallback() {
+        dialog1=new LoadingAlertDialog(getActivity());
+        dialog1.show("加载中");
+        //判断网络是否有连接
+        netWorkUtils=new NetWorkUtils();
+        if(netWorkUtils.isNetworkConnected(getActivity())){
+            Log.e("TAG", "loaddata: "+Constant.APPURLS+"product/"+id );
+            new HttpUtils().Post(Constant.APPURLS+"product/"+id,"","",new HttpUtils.HttpCallback() {
 
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
 
-                Message msg= Message.obtain(
-                        mHandler,1,data
-                );
-                mHandler.sendMessage(msg);
-            }
+                    Message msg= Message.obtain(
+                            mHandler,1,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -496,7 +512,10 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                     case 2:
                         JSONObject objectmsg=new JSONObject(msg.obj.toString());
                         if(objectmsg.getString("code").equals("200")){
-                            Toast.makeText(getActivity(),objectmsg.getString("object"),Toast.LENGTH_SHORT).show();
+                            dialog1.dismiss();
+                            Toast toast = Toast.makeText(getActivity(),objectmsg.getString("object"), Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                             popWindow.dismiss();
                         }
 
@@ -539,8 +558,12 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                 }
                             }
                         });
-                        webView.loadUrl("http://player.youku.com/embed/"+product.getVideo()+"");
-                        viewList.add(view1);
+                        if(!product.getVideo().equals("")){
+                            webView.loadUrl("http://player.youku.com/embed/"+product.getVideo()+"");
+                            viewList.add(view1);
+                        }
+
+
 
                         tv_goods_title.setText(product.getModelTitle());
                         tv_new_price.setText(String.valueOf(product.getSalePrice()));
@@ -608,18 +631,18 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                         objects.setProductItemList(productItemLists);
 
                         InventoryList inventoryList=null;
-                        JSONArray inventoryListsjsonarry=Jsonobject.getJSONArray("inventory");
-                        for(int i=0;i<inventoryListsjsonarry.length();i++){
-                            inventoryList=new InventoryList();
-                            JSONObject object=inventoryListsjsonarry.getJSONObject(i);
-                            inventoryList.setProductItemId(object.getString("skuId"));
-                            inventoryList.setQuantity(object.getString("quantity"));
-                            inventoryList.setLockQuantity(object.getString("lockQuantity"));
-                            inventoryLists.add(inventoryList);
-                        }
 
-
-
+                            if(!Jsonobject.isNull("inventory")){
+                                JSONArray inventoryListsjsonarry=Jsonobject.getJSONArray("inventory");
+                                for(int i=0;i<inventoryListsjsonarry.length();i++){
+                                    inventoryList=new InventoryList();
+                                    JSONObject object=inventoryListsjsonarry.getJSONObject(i);
+                                    inventoryList.setProductItemId(object.getString("skuId"));
+                                    inventoryList.setQuantity(object.getString("quantity"));
+                                    inventoryList.setLockQuantity(object.getString("lockQuantity"));
+                                    inventoryLists.add(inventoryList);
+                                }
+                            }
                         ProductAttrList productAttrList=null;
                          final JSONArray productAttrListjsonarray=Jsonobject.getJSONArray("productAttrList");
                         MRadioButton radioButton = null;
@@ -727,10 +750,12 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                             Log.e("TAG", "onClick: "+productItemLists.size() );
                                             for(int y=0;y<productItemLists.size();y++){
                                                 if((buffer.toString().equals(productItemLists.get(y).getProductModelAttrs()))){
+
                                                     Glide.with(getActivity()).load(Constant.loadimag+productItemLists.get(y).getListImg()).into(img);
                                                     String productId=productItemLists.get(y).getId();
                                                     salePrice.setText("¥"+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
                                                     itemNo.setText("商品编号:"+productItemLists.get(y).getItemNo());
+                                                    Log.e("TAG", "getListImg:"+productItemLists.get(y).getListImg());
                                                     Log.e("TAG", "promotions:"+promotions.size());
                                                     Log.e("TAG", "onClick: "+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
                                                         if(promotions.size()==0){
@@ -755,21 +780,28 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
 
 
                                                     Log.e("TAG", "productItemId: "+productItemId );
-                                                        for(int i=0;i<inventoryLists.size();i++){
-                                                            if(productItemId.equals(inventoryLists.get(i).getProductItemId())){
-                                                                int quantity= Integer.parseInt(inventoryLists.get(i).getQuantity());
-                                                                int LockQuantity= Integer.parseInt(inventoryLists.get(i).getLockQuantity());
-                                                                int kucun=quantity-LockQuantity;
-                                                                kucun_tv.setText("库存:"+kucun);
-                                                                if(kucun==0){
-                                                                    add_carts.setEnabled(false);
-                                                                    add_carts.setText("暂时没有库存哦！");
-                                                                }else {
-                                                                    add_carts.setEnabled(true);
-                                                                    add_carts.setText("加入购物车");
+                                                        if(inventoryLists.size()!=0){
+                                                            for(int i=0;i<inventoryLists.size();i++){
+                                                                if(productItemId.equals(inventoryLists.get(i).getProductItemId())){
+                                                                    int quantity= Integer.parseInt(inventoryLists.get(i).getQuantity());
+                                                                    int LockQuantity= Integer.parseInt(inventoryLists.get(i).getLockQuantity());
+                                                                    int kucun=quantity-LockQuantity;
+                                                                    Log.e("库存", "onClick: "+kucun );
+                                                                    kucun_tv.setText("库存:"+kucun);
+                                                                    if(kucun==0){
+                                                                        add_carts.setEnabled(false);
+                                                                        add_carts.setText("暂时没有库存哦！");
+                                                                    }else {
+                                                                        add_carts.setEnabled(true);
+                                                                        add_carts.setText("加入购物车");
+                                                                    }
                                                                 }
                                                             }
+                                                        }else {
+                                                            add_carts.setEnabled(false);
+                                                            add_carts.setText("暂时没有库存哦！");
                                                         }
+
 
 
                                                 }
@@ -799,12 +831,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
 
                         objects.setProductAttrList(productAttrLists);
                         object.add(objects);
-
-
-
-
-
-
+                        dialog1.dismiss();
                         break;
                 }
             }catch (JSONException e){

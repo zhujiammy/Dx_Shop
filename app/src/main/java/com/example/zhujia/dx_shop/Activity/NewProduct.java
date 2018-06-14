@@ -44,6 +44,7 @@ import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.Activity.ProductDetailsActivity;
 import com.example.zhujia.dx_shop.Adapter.AddressManagementAdapter;
 import com.example.zhujia.dx_shop.Adapter.GoodsListRecyclerViewAdapter;
+import com.example.zhujia.dx_shop.Adapter.HomeAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.R;
@@ -51,8 +52,10 @@ import com.example.zhujia.dx_shop.Tools.ClearEditText;
 import com.example.zhujia.dx_shop.Tools.CustomDialog;
 import com.example.zhujia.dx_shop.Tools.IEditTextChangeListener;
 import com.example.zhujia.dx_shop.Tools.ImageService;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -92,8 +95,10 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
     private int goodsType=0;
     private Toolbar toolbar;
     private ImageView ivGoodsType;
-    private GoodsListRecyclerViewAdapter adapter;
+    private HomeAdapter adapter;
     private ImageView ivStick;//置顶
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -118,7 +123,7 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
         loginUserId=sharedPreferences.getString("userId","");
         initUI();
         loaddata();//加载列表数据
-        adapter=new GoodsListRecyclerViewAdapter(getData(),getApplicationContext());
+        adapter=new HomeAdapter(getData(),getApplicationContext());
     }
 
     private void initUI(){
@@ -167,23 +172,32 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
 
 
     private void loaddata(){
-        new HttpUtils().Get(Constant.APPURLS+"index/product/new",new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,0,data
-                );
-                mHandler.sendMessage(msg);
-            }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+        dialog1=new LoadingAlertDialog(NewProduct.this);
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(NewProduct.this)){
+            new HttpUtils().Get(Constant.APPURLS+"index/product/new",new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,0,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-        });
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
+
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(NewProduct.this,"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
 
 
     }
@@ -207,7 +221,7 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
                             adapter.notifyDataSetChanged();
                             recyclerView.showData();
                             recyclerView.setRefreshing(false);
-                            adapter.setOnitemClickListener(new GoodsListRecyclerViewAdapter.OnitemClickListener() {
+                            adapter.setOnitemClickListener(new HomeAdapter.OnitemClickListener() {
                                 @Override
                                 public void onItemClick(View view, int position) {
                                     intent =new Intent(NewProduct.this,ProductDetailsActivity.class);
@@ -215,6 +229,7 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
                                     startActivity(intent);
                                 }
                             });
+                            dialog1.dismiss();
                             break;
 
 
@@ -281,7 +296,7 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
                     ivGoodsType.setImageResource(R.mipmap.good_type_linear);
                     //1：设置布局类型
                     loaddata();
-                    adapter = new GoodsListRecyclerViewAdapter(getData(),NewProduct.this);
+                    adapter = new HomeAdapter(getData(),NewProduct.this);
                     adapter.notifyDataSetChanged();
                     adapter.setType(1);
                     //2：设置对应的布局管理器
@@ -296,7 +311,7 @@ public class NewProduct extends AppCompatActivity implements View.OnClickListene
                     mListData.clear();
                     ivGoodsType.setImageResource(R.mipmap.good_type_grid);
                     loaddata();
-                    adapter = new GoodsListRecyclerViewAdapter(getData(),NewProduct.this);
+                    adapter = new HomeAdapter(getData(),NewProduct.this);
                     adapter.notifyDataSetChanged();
                     adapter.setType(0);
                     recyclerView.inits(new LinearLayoutManager(NewProduct.this),this,this);

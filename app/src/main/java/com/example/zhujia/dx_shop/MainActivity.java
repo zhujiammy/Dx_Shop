@@ -126,6 +126,17 @@ public class MainActivity extends AppCompatActivity {
         }
 
         openLogin=new OpenLogin(MainActivity.this);
+        if(intent.getStringExtra("select")!=null){
+
+            if(intent.getStringExtra("select").equals("2")){
+                select(2);
+            }
+            if(intent.getStringExtra("select").equals("3")){
+                select(3);
+            }
+
+        }
+
     }
 
     private void initUI(){
@@ -278,16 +289,7 @@ public class MainActivity extends AppCompatActivity {
            // updataapk();
         }
         isForeground = true;
-        if(intent.getStringExtra("select")!=null){
 
-            if(intent.getStringExtra("select").equals("2")){
-                navigationController.setSelect(2);
-            }
-            if(intent.getStringExtra("select").equals("3")){
-                navigationController.setSelect(3);
-            }
-
-        }
 
         //init();
     }
@@ -298,6 +300,10 @@ public class MainActivity extends AppCompatActivity {
         // 设置JPush别名
         new JPushInterface().setAliasAndTags(getApplicationContext(), JPushUtil.getImei(getApplicationContext()), null);
     }*/
+
+    private void select(int i){
+        navigationController.setSelect(i);
+    }
 
     private void startPermissionsActivity() {
         PermissionsActivity.startActivityForResult(this, REQUEST_CODE, PERMISSIONS);

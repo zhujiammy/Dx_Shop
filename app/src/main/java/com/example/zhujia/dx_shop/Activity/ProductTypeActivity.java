@@ -47,8 +47,10 @@ import com.example.zhujia.dx_shop.Tools.ClearEditText;
 import com.example.zhujia.dx_shop.Tools.CustomDialog;
 import com.example.zhujia.dx_shop.Tools.IEditTextChangeListener;
 import com.example.zhujia.dx_shop.Tools.ImageService;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -91,6 +93,8 @@ public class ProductTypeActivity extends AppCompatActivity implements View.OnCli
     private ImageView ivStick;//置顶
     private Toolbar toolbar;
     private String id;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -161,31 +165,39 @@ public class ProductTypeActivity extends AppCompatActivity implements View.OnCli
 
 
     private void loaddata(){
-        Log.e("TAG", "loaddata: "+id );
-        new HttpUtils().Get(Constant.APPURLS+"product/type?id="+id+"&startRow="+pageindex+"&pageSize=20",new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,0,data
-                );
-                mHandler.sendMessage(msg);
-            }
+        dialog1=new LoadingAlertDialog(ProductTypeActivity.this);
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(ProductTypeActivity.this)){
+            Log.e("TAG", "loaddata: "+id );
+            new HttpUtils().Get(Constant.APPURLS+"product/search?type="+id+"&startRow="+pageindex+"&pageSize=20",new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,0,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(getApplicationContext(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
 
 
     }
     //加载更多
     private void initItemMoreData() {
 
-        new HttpUtils().Get(Constant.APPURLS+"product/type?id="+id+"&startRow="+total+"&pageSize=20",new HttpUtils.HttpCallback() {
+        new HttpUtils().Get(Constant.APPURLS+"product/search?type="+id+"&startRow="+total+"&pageSize=20",new HttpUtils.HttpCallback() {
             @Override
             public void onSuccess(String data) {
                 // TODO Auto-generated method stub
@@ -261,6 +273,7 @@ public class ProductTypeActivity extends AppCompatActivity implements View.OnCli
                                     startActivity(intent);
                                 }
                             });
+                            dialog1.dismiss();
                             break;
 
 

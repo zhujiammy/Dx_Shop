@@ -10,8 +10,10 @@
     <RelativeLayout
         android:background="@color/white"
         android:layout_width="match_parent"
-        android:layout_height="409dp">
+        android:layout_height="400dp">
         <LinearLayout
+            android:layout_alignParentTop="true"
+            android:layout_above="@+id/be"
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -165,6 +167,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/be"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -183,6 +186,7 @@
 
 
             <TextView
+                android:visibility="gone"
                 android:background="@color/red"
                 android:text="立即购买"
                 android:gravity="center"

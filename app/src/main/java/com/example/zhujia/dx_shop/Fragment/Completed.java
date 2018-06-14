@@ -27,8 +27,10 @@ import com.example.zhujia.dx_shop.Adapter.PendingPaymentAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.Data.OrderData;
 import com.example.zhujia.dx_shop.R;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -51,13 +53,17 @@ public class Completed extends Fragment implements OnRefreshListener,OnLoadMoreL
     private String LoginState,TOKEN,loginUserId;
     private SharedPreferences sharedPreferences;
     JSONObject reslutJSONObject;
+    public static final int  INTENT=1004;
     JSONArray contentjsonarry;
     boolean hasMoreData;
     private CompletedAdapter adapter;
+
     private List<OrderData> mListData=new ArrayList<>();
     private Handler mHandler;
     private String OrderStatus;
     private Context context;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
     @SuppressLint("WrongConstant")
     @Nullable
     @Override
@@ -118,24 +124,50 @@ public class Completed extends Fragment implements OnRefreshListener,OnLoadMoreL
         });
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            switch (requestCode) {
+
+                case INTENT:
+                    if(data.getStringExtra("statue").equals("1")){
+                        recyclerView.setRefreshing(true);
+                    }
+                    break;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
     private void loaddata(){
-        new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/list?orderStatus=08",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,0,data
-                );
-                mHandler.sendMessage(msg);
-            }
+        dialog1=new LoadingAlertDialog(getActivity());
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(getActivity())){
+            new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/list?orderStatus=07",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,0,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -189,6 +221,7 @@ public class Completed extends Fragment implements OnRefreshListener,OnLoadMoreL
                             }
 
 
+                            dialog1.dismiss();
                             break;
 
 
@@ -220,7 +253,8 @@ public class Completed extends Fragment implements OnRefreshListener,OnLoadMoreL
     public void  orderDetails(int position){
         Intent intent=new Intent(getActivity(),OrderDetailsActivity.class);
         intent.putExtra("orderNo",mListData.get(position).getOrderNo());
-        startActivity(intent);
+        intent.putExtra("types","1");
+        startActivityForResult(intent,INTENT);
     }
 
     @SuppressLint("NewApi")

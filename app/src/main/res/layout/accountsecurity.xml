@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:background="@color/defcolor"
+    android:fitsSystemWindows="true"
+    xmlns:tools="http://schemas.android.com/tools">
+    <android.support.design.widget.AppBarLayout
+        android:visibility="visible"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/ToolbarTheme">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/BLAK"
+                android:textSize="20sp"
+                android:text="修改密码"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                />
+
+        </android.support.v7.widget.Toolbar>
+
+
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:background="@color/defcolor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="400dp">
+
+            <LinearLayout
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:gravity="center"
+                    android:textColor="@color/BLAK"
+                    android:textSize="17sp"
+                    android:text="旧密码"
+                    android:layout_weight="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+                <com.example.zhujia.dx_shop.Tools.ClearEditText
+                    android:id="@+id/Oldpass"
+                    android:paddingRight="4dp"
+                    android:inputType="textPassword"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/edit_style"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:gravity="center"
+                    android:textColor="@color/BLAK"
+                    android:textSize="17sp"
+                    android:text="新密码"
+                    android:layout_weight="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+                <com.example.zhujia.dx_shop.Tools.ClearEditText
+                    android:id="@+id/newpass"
+                    android:paddingRight="4dp"
+                    android:inputType="textPassword"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/edit_style"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:background="@color/white"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="50dp">
+
+                <TextView
+                    android:gravity="center"
+                    android:textColor="@color/BLAK"
+                    android:textSize="17sp"
+                    android:text="确认密码"
+                    android:layout_weight="3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    />
+                <com.example.zhujia.dx_shop.Tools.ClearEditText
+                    android:id="@+id/confirmnewpass"
+                    android:inputType="textPassword"
+                    android:paddingRight="4dp"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/edit_style"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+
+
+
+
+
+</LinearLayout>

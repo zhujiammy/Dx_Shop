@@ -35,7 +35,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private ClearEditText loginName,passWord;
     private Button login_btn;
     private Toolbar toolbar;
-    private TextView register_btn;
+    private TextView register_btn,fpass;
     private Intent intent_page;
     ProgressDialog progressDialog;
     private boolean flag = false;
@@ -69,12 +69,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
 
     private void initUI(){
-
         intent_page=getIntent();
         login_btn=(Button)findViewById(R.id.login_btn);
         loginName=(ClearEditText)findViewById(R.id.loginName);
         passWord=(ClearEditText)findViewById(R.id.passWord);
         register_btn=(TextView)findViewById(R.id.register_btn);
+        fpass=(TextView)findViewById(R.id.fpass);
+        fpass.setOnClickListener(this);
         login_btn.setOnClickListener(this);
         login_btn.setEnabled(false);
         register_btn.setOnClickListener(this);
@@ -138,6 +139,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         //注册
         if(v==register_btn){
             Intent intent=new Intent(getApplicationContext(),RegisterActivity.class);
+            startActivity(intent);
+        }
+        //忘记密码
+        if(v==fpass){
+            Intent intent=new Intent(getApplicationContext(),ForgetPasswordActivity.class);
             startActivity(intent);
         }
     }
@@ -225,18 +231,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         public void run() {
             progressDialog.dismiss();
             Intent intent=new Intent(LoginActivity.this,MainActivity.class);
-            if(intent_page.getStringExtra("page").equals("2")){
-                intent.putExtra("select","2");
-                startActivity(intent);
-                finish();
-            }else if(intent_page.getStringExtra("page").equals("3")){
+            if(intent_page.getStringExtra("page").equals("3")){
                 intent.putExtra("select","3");
                 startActivity(intent);
                 finish();
             }else if(intent_page.getStringExtra("page").equals("x")){
+                intent.putExtra("select","3");
+                startActivity(intent);
                 finish();
             }
-
 
         }
     };
@@ -257,7 +260,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             }
 
         });
-
     }
 
 }

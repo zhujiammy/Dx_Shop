@@ -1,7 +1,10 @@
 package com.example.zhujia.dx_shop.Activity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
@@ -11,6 +14,7 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -34,14 +38,20 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
     private Toolbar toolbar;
     private ClearEditText phonenum,Graphicverificationcode,phoneverificationcode,pass;
     private ImageView verificationCode;
-    private TimeButton Getverify;
+    private Button btnGetVerificationCode;
     private Button register_btn;
     JSONObject object,pager;
     JSONObject reslutJSONObject;
+    private TimeCount mTimer;
+    SharedPreferences.Editor editor;
+    private SharedPreferences sharedPreferences;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.register);
+        sharedPreferences =getSharedPreferences("Session",
+                Context.MODE_APPEND);
+        editor = sharedPreferences.edit();
         getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("");
@@ -54,8 +64,17 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
             }
         });
-
         initUI();
+        long endDate = System.currentTimeMillis();
+        long curDate = sharedPreferences.getLong("curDate",0);
+        long gapdate = endDate -curDate;
+        if(gapdate<60000){
+            mTimer = new TimeCount(60000-gapdate, 1000);
+            mTimer.start();
+        }else{
+            // 初始化计时器
+            mTimer = new TimeCount(60000, 1000);
+        }
     }
 
     private void initUI(){
@@ -65,8 +84,8 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         phonenum.addTextChangedListener(watcher);
         Graphicverificationcode=(ClearEditText)findViewById(R.id.Graphicverificationcode);
         phoneverificationcode=(ClearEditText)findViewById(R.id.phoneverificationcode);
-        Getverify=(TimeButton)findViewById(R.id.Getverify);
-        Getverify.setOnClickListener(this);
+        btnGetVerificationCode=(Button) findViewById(R.id.btnGetVerificationCode);
+        btnGetVerificationCode.setOnClickListener(this);
         pass=(ClearEditText)findViewById(R.id.pass);
         register_btn=(Button)findViewById(R.id.register_btn);
         register_btn.setOnClickListener(this);
@@ -107,17 +126,46 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             String number = phonenum.getText().toString();
             boolean judge = isMobile(number);
             if(s.length()==11){
-                if (judge == true) {
-                    verification();
+                if (judge) {
+                    btnGetVerificationCode.setClickable(true);
+                    btnGetVerificationCode.setBackgroundResource(R.drawable.dialog_button2);
+                    validate();
                 } else {
+                    btnGetVerificationCode.setClickable(false);
+                    btnGetVerificationCode.setBackgroundResource(R.drawable.dialog_button3);
                     Toast.makeText(getApplicationContext(),"手机号码格式不正确",Toast.LENGTH_SHORT).show();
                 }
+            }else {
+                verificationCode.setVisibility(View.INVISIBLE);
             }
 
 
 
         }
     };
+
+
+
+    private void validate(){
+        //判断用户名是否存在
+        new HttpUtils().Post(Constant.APPURLS+"customer/validate?userName="+phonenum.getText().toString(),"","",new HttpUtils.HttpCallback() {
+            @Override
+            public void onSuccess(String data) {
+                // TODO Auto-generated method stub
+                Message msg= Message.obtain(
+                        mHandlers,3,data
+                );
+                mHandlers.sendMessage(msg);
+            }
+
+            @Override
+            public void onError(String msg) {
+                Log.e("TAG", "onError: "+msg );
+            }
+
+        });
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -127,34 +175,55 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
         }
 
         if(v==register_btn){
-            //注册
-            object = new JSONObject();
-            pager=new JSONObject();
-            try {
-                object.put("loginName",phonenum.getText().toString());
-                object.put("passWord",pass.getText().toString());
-                object.put("shortMessage",phoneverificationcode.getText().toString());
-                object.put("verificationCode",Graphicverificationcode.getText().toString());
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            String params=object.toString();
-            new HttpUtils().postJsoncode(Constant.APPURLS+"/customer/register",params,new HttpUtils.HttpCallback() {
 
-                @Override
-                public void onSuccess(String data) {
-                    // TODO Auto-generated method stub
-                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+            if(!TextUtils.isEmpty(phonenum.getText().toString())){
 
-                    Message msg= Message.obtain(
-                            mHandlers,2,data
-                    );
-                    mHandlers.sendMessage(msg);
+                if(!TextUtils.isEmpty(Graphicverificationcode.getText().toString())){
+                    if(!TextUtils.isEmpty(phoneverificationcode.getText().toString())){
+                        if(!TextUtils.isEmpty(pass.getText().toString())){
+                            //注册
+                            object = new JSONObject();
+                            pager=new JSONObject();
+                            try {
+                                object.put("loginName",phonenum.getText().toString());
+                                object.put("passWord",pass.getText().toString());
+                                object.put("shortMessage",phoneverificationcode.getText().toString());
+                                object.put("verificationCode",Graphicverificationcode.getText().toString());
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            String params=object.toString();
+                            new HttpUtils().postJsoncode(Constant.APPURLS+"/customer/register",params,new HttpUtils.HttpCallback() {
+
+                                @Override
+                                public void onSuccess(String data) {
+                                    // TODO Auto-generated method stub
+                                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+
+                                    Message msg= Message.obtain(
+                                            mHandlers,2,data
+                                    );
+                                    mHandlers.sendMessage(msg);
+                                }
+
+                            });
+                        }else {
+                            Toast.makeText(getApplicationContext(),"密码不能为空",Toast.LENGTH_SHORT).show();
+                        }
+                    }else {
+                        Toast.makeText(getApplicationContext(),"手机证码不能为空",Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    Toast.makeText(getApplicationContext(),"图形验证码不能为空",Toast.LENGTH_SHORT).show();
                 }
 
-            });
+            }else {
+                Toast.makeText(getApplicationContext(),"手机号码不能为空",Toast.LENGTH_SHORT).show();
+            }
+
         }
-        if(v==Getverify){
+        if(v==btnGetVerificationCode){
+
             //获取手机验证码
             if(TextUtils.isEmpty(phonenum.getText().toString())){
                 Toast.makeText(getApplicationContext(),"手机号码不能为空！",Toast.LENGTH_SHORT).show();
@@ -226,7 +295,9 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                        reslutJSONObject=new JSONObject(msg.obj.toString());
                         if(reslutJSONObject.getString("code").equals("200")){
-                            Getverify.setTextAfter("秒后重新验证").setTextBefore("获取验证码").setLenght(10 * 6000);
+                            editor.putLong("curDate",System.currentTimeMillis());
+                            editor.commit();
+                            startTimeCount();
                         }
 
                         break;
@@ -235,10 +306,26 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
 
                        reslutJSONObject=new JSONObject(msg.obj.toString());
                         if(reslutJSONObject.getString("code").equals("200")){
-                            Toast.makeText(getApplicationContext(),"注册成功！",Toast.LENGTH_SHORT).show();
+                            Toast toast = Toast.makeText(getApplicationContext(), "注册成功", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
                             finish();
                         }
 
+                        break;
+                    case 3:
+                        reslutJSONObject=new JSONObject(msg.obj.toString());
+                        if(reslutJSONObject.getString("code").equals("500")){
+                            verificationCode.setVisibility(View.INVISIBLE);
+                            Toast toast = Toast.makeText(getApplicationContext(), "用户名已存在,请重新输入", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+
+                        }
+                        if(reslutJSONObject.getString("code").equals("200")){
+                            verification();
+                            verificationCode.setVisibility(View.VISIBLE);
+                        }
                         break;
 
                     default:
@@ -248,9 +335,43 @@ public class RegisterActivity extends AppCompatActivity implements View.OnClickL
             }catch (JSONException e){
                 e.printStackTrace();
             }
-
-
-
         }
     };
+
+    /**
+     * 启动计时器
+     */
+    public void startTimeCount() {
+        mTimer.start();
+    }
+
+    /**
+     * 倒计时器
+     */
+    class TimeCount extends CountDownTimer {
+        public TimeCount(long millisInFuture, long countDownInterval) {
+            // 参数依次为总时长,和计时的时间间隔
+            super(millisInFuture, countDownInterval);
+        }
+
+        /**
+         * 计时完毕时触发
+         */
+        @Override
+        public void onFinish() {
+            btnGetVerificationCode.setClickable(true);
+            btnGetVerificationCode.setBackgroundResource(R.drawable.dialog_button2);
+            btnGetVerificationCode.setText("获取验证码");
+        }
+
+        /**
+         * 计时过程显示
+         */
+        @Override
+        public void onTick(long millisUntilFinished) {
+            btnGetVerificationCode.setClickable(false);
+            btnGetVerificationCode.setBackgroundResource(R.drawable.dialog_button3);
+            btnGetVerificationCode.setText(millisUntilFinished / 1000 + "s");
+        }
+    }
 }

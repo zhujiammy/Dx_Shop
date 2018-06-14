@@ -1,0 +1,255 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/re"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:background="@mipmap/patrol_back"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="筛选"/>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/def_bg"/>
+
+    <ScrollView
+        android:layout_above="@+id/lin"
+        android:layout_below="@+id/re"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/ll_task_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:text="类型"/>
+                <com.example.zhujia.dx_shop.Tools.FNRadioGroup
+                    android:id="@+id/catalog"
+                    android:paddingLeft="20dp"
+                    android:layout_width="match_parent"
+                    app:childMarginTop="10dp"
+                    app:childMarginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clipChildren="true"
+                    android:layout_height="wrap_content">
+                </com.example.zhujia.dx_shop.Tools.FNRadioGroup>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/def_bg"/>
+            </LinearLayout>
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:text="分类"/>
+
+                <com.example.zhujia.dx_shop.Tools.FNRadioGroup
+                    android:id="@+id/type"
+                    android:paddingLeft="20dp"
+                    android:layout_width="match_parent"
+                    app:childMarginTop="10dp"
+                    app:childMarginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clipChildren="true"
+                    android:layout_height="wrap_content">
+                </com.example.zhujia.dx_shop.Tools.FNRadioGroup>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/def_bg"/>
+            </LinearLayout>
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:text="价格区间"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp">
+
+                    <EditText
+                        android:inputType="number"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginTop="3dp"
+                        android:layout_marginBottom="3dp"
+                        android:background="@drawable/edit_style"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        />
+                    <TextView
+                        android:layout_margin="3dp"
+                        android:gravity="center"
+                        android:text="-"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+
+                        />
+                    <EditText
+                        android:inputType="number"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/edit_style"
+                        android:layout_width="100dp"
+                        android:layout_height="match_parent"
+                        />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/def_bg"/>
+            </LinearLayout>
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:text="系列"/>
+
+                <com.example.zhujia.dx_shop.Tools.FNRadioGroup
+                    android:id="@+id/series"
+                    android:paddingLeft="20dp"
+                    android:layout_width="match_parent"
+                    app:childMarginTop="10dp"
+                    app:childMarginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clipChildren="true"
+                    android:layout_height="wrap_content">
+                </com.example.zhujia.dx_shop.Tools.FNRadioGroup>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/def_bg"/>
+            </LinearLayout>
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:gravity="center"
+                    android:drawablePadding="5dp"
+                    android:text="品牌"/>
+
+                <com.example.zhujia.dx_shop.Tools.FNRadioGroup
+                    android:id="@+id/brand"
+                    android:paddingLeft="20dp"
+                    android:layout_width="match_parent"
+                    app:childMarginTop="10dp"
+                    app:childMarginRight="10dp"
+                    android:layout_marginBottom="5dp"
+                    android:clipChildren="true"
+                    android:layout_height="wrap_content">
+                </com.example.zhujia.dx_shop.Tools.FNRadioGroup>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/def_bg"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:id="@+id/lin"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        >
+
+        <Button
+            android:background="@color/white"
+            android:id="@+id/btn_reset"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:text="重置"
+            android:textColor="@color/BLAK"/>
+
+        <Button
+            android:background="@color/red"
+            android:id="@+id/btn_confirm"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_weight="1"
+            android:textColor="@color/white"
+            android:text="确定"
+          />
+    </LinearLayout>
+
+</RelativeLayout>

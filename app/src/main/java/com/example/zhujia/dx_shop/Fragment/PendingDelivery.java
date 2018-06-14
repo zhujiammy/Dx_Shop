@@ -25,8 +25,10 @@ import com.example.zhujia.dx_shop.Adapter.PendingPaymentAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.Data.OrderData;
 import com.example.zhujia.dx_shop.R;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -50,12 +52,15 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
     private SharedPreferences sharedPreferences;
     JSONObject reslutJSONObject;
     JSONArray contentjsonarry;
+    public static final int  INTENT=1004;
     boolean hasMoreData;
     private PendingDeliveryAdapter adapter;
     private List<OrderData> mListData=new ArrayList<>();
     private Handler mHandler;
     private String OrderStatus;
     private Context context;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
     @SuppressLint("WrongConstant")
     @Nullable
     @Override
@@ -117,23 +122,31 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
     }
 
     private void loaddata(){
-        new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/list?orderStatus=09",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,0,data
-                );
-                mHandler.sendMessage(msg);
-            }
+        dialog1=new LoadingAlertDialog(getActivity());
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(getActivity())){
+            new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/list?orderStatus=05",TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,0,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 
@@ -149,6 +162,24 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
         }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            switch (requestCode) {
+
+                case INTENT:
+                    if(data.getStringExtra("statue").equals("1")){
+                        recyclerView.setRefreshing(true);
+                    }
+                    break;
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 消息处理Handler
@@ -167,8 +198,7 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
                             //返回item类型数据
                             reslutJSONObject=new JSONObject(msg.obj.toString());
                             if(reslutJSONObject.getString("code").equals("404")){
-                                View  emtview=View.inflate(getActivity(),R.layout.emtview,null);
-
+                                View  emtview=View.inflate(getContext(),R.layout.emtview,null);
                                 recyclerView.setEmptyView(emtview);
                                 recyclerView.showEmpty(new View.OnClickListener() {
                                     @Override
@@ -185,6 +215,7 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
                                 recyclerView.setRefreshing(false);
                                 recyclerView.setLoadingMore(false);
                             }
+                            dialog1.dismiss();
 
 
                             break;
@@ -218,7 +249,8 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
     public void  orderDetails(int position){
         Intent intent=new Intent(getActivity(),OrderDetailsActivity.class);
         intent.putExtra("orderNo",mListData.get(position).getOrderNo());
-        startActivity(intent);
+        intent.putExtra("types","1");
+        startActivityForResult(intent,INTENT);
     }
 
     @SuppressLint("NewApi")

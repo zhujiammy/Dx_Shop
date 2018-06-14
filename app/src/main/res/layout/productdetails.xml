@@ -76,6 +76,7 @@
 
 
         <TextView
+            android:visibility="gone"
             android:id="@+id/buy"
             android:background="@color/red"
             android:text="立即购买"

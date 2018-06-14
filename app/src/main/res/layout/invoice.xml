@@ -1,0 +1,573 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:layout_width="match_parent"
+    android:background="@color/def_bg"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent">
+    <android.support.design.widget.AppBarLayout
+        android:visibility="visible"
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_gravity="center"
+                android:textColor="@color/BLAK"
+                android:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="发票信息"
+                android:layout_centerInParent="true"
+                />
+
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+
+
+    <ScrollView
+        android:id="@+id/sc"
+        android:layout_above="@+id/lin"
+        android:layout_below="@+id/appbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:background="@color/white"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="订单编号:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.example.zhujia.dx_shop.Tools.ClearEditText
+                            android:id="@+id/orderNo"
+                            android:enabled="false"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发票抬头:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.example.zhujia.dx_shop.Tools.ClearEditText
+                            android:id="@+id/invoiceTitle"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发票类型:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <RadioGroup
+                            android:gravity="center"
+                            android:orientation="horizontal"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <RadioButton
+                                android:checked="true"
+                                android:id="@+id/invoiceType1"
+                                android:gravity="center"
+                                android:layout_weight="1"
+                                android:button="@null"
+                                android:textSize="12sp"
+
+                                android:background="@drawable/radiobutton_background"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="增值税普通发票"
+                                />
+                            <RadioButton
+                                android:id="@+id/invoiceType2"
+                                android:gravity="center"
+                                android:layout_marginLeft="5dp"
+                                android:layout_weight="1"
+                                android:textSize="12sp"
+                                android:background="@drawable/radiobutton_background"
+                                android:button="@null"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:text="增值税专用发票"
+                                />
+                        </RadioGroup>
+
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+
+                    android:visibility="gone"
+                    android:id="@+id/bank_lin"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/BLAK"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="开户银行:"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <com.example.zhujia.dx_shop.Tools.ClearEditText
+                                android:id="@+id/bankName"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginRight="14dp"
+                                android:paddingRight="3dp"
+                                android:background="@drawable/edit_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+                    <View
+                        android:background="@color/def_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/BLAK"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="银行账号:"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <com.example.zhujia.dx_shop.Tools.ClearEditText
+                                android:id="@+id/bankNo"
+                                android:inputType="number"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginRight="14dp"
+                                android:paddingRight="3dp"
+                                android:background="@drawable/edit_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+                    <View
+                        android:background="@color/def_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/BLAK"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="纳税人识别码:"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <com.example.zhujia.dx_shop.Tools.ClearEditText
+                                android:id="@+id/invoiceCode"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginRight="14dp"
+                                android:paddingRight="3dp"
+                                android:background="@drawable/edit_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+                    <View
+                        android:background="@color/def_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp">
+                        <LinearLayout
+                            android:layout_weight="3"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <TextView
+                                android:layout_marginLeft="8dp"
+                                android:layout_gravity="center_vertical"
+                                android:textColor="@color/BLAK"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="注册地址:"
+                                />
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_weight="1"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent">
+                            <com.example.zhujia.dx_shop.Tools.ClearEditText
+                                android:id="@+id/registerAddress"
+                                android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginBottom="5dp"
+                                android:layout_marginRight="14dp"
+                                android:paddingRight="3dp"
+                                android:background="@drawable/edit_style"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent" />
+                        </LinearLayout>
+
+
+
+                    </LinearLayout>
+                    <View
+                        android:background="@color/def_bg"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"/>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="省市区:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:gravity="center_vertical"
+                            android:id="@+id/pcd"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="详细地址:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.example.zhujia.dx_shop.Tools.ClearEditText
+                            android:id="@+id/receiveAddress"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="收票人:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.example.zhujia.dx_shop.Tools.ClearEditText
+                            android:id="@+id/receivePerson"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp">
+                    <LinearLayout
+                        android:layout_weight="3"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <TextView
+                            android:layout_marginLeft="8dp"
+                            android:layout_gravity="center_vertical"
+                            android:textColor="@color/BLAK"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="手机号:"
+                            />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <com.example.zhujia.dx_shop.Tools.ClearEditText
+                            android:id="@+id/receivePhone"
+                            android:inputType="phone"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="14dp"
+                            android:paddingRight="3dp"
+                            android:background="@drawable/edit_style"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+                <View
+                    android:background="@color/def_bg"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
+        android:gravity="center"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:id="@+id/lin"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <Button
+            android:id="@+id/submit"
+            android:background="@drawable/loginbt"
+            android:textColor="@color/white"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"
+            android:layout_width="150dp"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="提交"
+
+            />
+
+    </LinearLayout>
+</RelativeLayout>

@@ -39,17 +39,21 @@ import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.Activity.NewProduct;
 import com.example.zhujia.dx_shop.Activity.ProductDetailsActivity;
 import com.example.zhujia.dx_shop.Activity.ProductTypeActivity;
+import com.example.zhujia.dx_shop.Activity.SearchActivity;
 import com.example.zhujia.dx_shop.Activity.SecondkillActivity;
 import com.example.zhujia.dx_shop.Adapter.GoodsListRecyclerViewAdapter;
+import com.example.zhujia.dx_shop.Adapter.HomeAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FixedGridLayout;
 import com.example.zhujia.dx_shop.Tools.FragmentUserVisibleController;
 import com.example.zhujia.dx_shop.Tools.GlideImageLoader;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.MaskableImageView;
 import com.example.zhujia.dx_shop.Tools.MyScrollView;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -73,7 +77,7 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by DXSW5 on 2018/3/14.
  */
 
-public class HomePage extends Fragment implements View.OnClickListener, FragmentUserVisibleController.UserVisibleCallback,OnRefreshListener,OnLoadMoreListener {
+public class HomePage extends Fragment implements View.OnClickListener,OnRefreshListener,OnLoadMoreListener {
 
     private View view;
     private Banner banner;
@@ -88,22 +92,21 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
     private SharedPreferences sharedPreferences;
     private  Drawable drawable,drawableqr,drawablemsg;
     private String LoginState,TOKEN,loginUserId;
-    private FragmentUserVisibleController userVisibleController;
     private LinearLayout lin_center,ggw;
     private LayoutInflater inflater;
     private ImageView newproduct;
     private SuperRefreshRecyclerView recyclerView;
-    private GoodsListRecyclerViewAdapter adapter;
+    private HomeAdapter adapter;
     private List<Data> mListData=new ArrayList<>();
     JSONObject reslutJSONObject;
     JSONArray contentjsonarry;
     private Intent intent;
     private ImageView Secondkill;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
+    private String flag="1";
 
 
-    public HomePage(){
-        userVisibleController = new FragmentUserVisibleController(this, this);
-    }
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -116,32 +119,41 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
         TOKEN=sharedPreferences.getString("token","");
         loginUserId=sharedPreferences.getString("userId","");
         initUI();
-        getposter();
-        getadvert();
-        loaddata();//加载列表数据
-        adapter=new GoodsListRecyclerViewAdapter(getData(),getActivity());
+        if(flag.equals("1")){
+            getposter();
+            getadvert();
+            loaddata();//加载列表数据
+            adapter=new HomeAdapter(getData(),getActivity());
+        }
+
         return view;
     }
 
     private void loaddata(){
-        new HttpUtils().Get(Constant.APPURLS+"index/index/product",new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,2,data
-                );
-                mHandler.sendMessage(msg);
-            }
+        if(netWorkUtils.isNetworkConnected(getActivity())){
+            new HttpUtils().Get(Constant.APPURLS+"index/index/product",new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,2,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
 
-        });
+            });
+        }else {
+            Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
     }
+
 
     @SuppressLint("HandlerLeak")
     private List<Data>getData(){
@@ -153,6 +165,7 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
                 try{
                     switch (msg.what) {
                         case 0:
+                            flag="2";
                             JSONObject object=new JSONObject(msg.obj.toString());
                             JSONArray objectarray=object.getJSONArray("object");
                             list=new ArrayList<>();
@@ -171,6 +184,8 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
                             break;
 
                         case 1:
+                            flag="2";
+                            ggw.removeAllViews();
                             JSONObject objects=new JSONObject(msg.obj.toString());
                             JSONArray objectarrays=objects.getJSONArray("object");
                             Log.e("TAG", "handleMessage: "+objectarrays.length() );
@@ -205,6 +220,7 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
                             break;
 
                         case 2:
+                            flag="2";
                             //返回item类型数据
                             reslutJSONObject=new JSONObject(msg.obj.toString());
                             mListData.clear();
@@ -215,7 +231,7 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
                             adapter.notifyDataSetChanged();
                             recyclerView.showData();
                             recyclerView.setRefreshing(false);
-                            adapter.setOnitemClickListener(new GoodsListRecyclerViewAdapter.OnitemClickListener() {
+                            adapter.setOnitemClickListener(new HomeAdapter.OnitemClickListener() {
                                 @Override
                                 public void onItemClick(View view, int position) {
                                     intent =new Intent(getActivity(),ProductDetailsActivity.class);
@@ -316,6 +332,7 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
         scrolll.setOnScrollListener(listener);
         line=(RelativeLayout)view.findViewById(R.id.line);
         seach_text=(TextView)view.findViewById(R.id.seach_text);
+        seach_text.setOnClickListener(this);
         QR=(TextView)view.findViewById(R.id.QR);
         MSG=(TextView)view.findViewById(R.id.MSG);
         Secondkill=(ImageView)view.findViewById(R.id.Secondkill);
@@ -364,6 +381,11 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
     @Override
     public void onClick(View v) {
 
+        if(v==seach_text){
+            //搜索
+            intent=new Intent(getActivity(),SearchActivity.class);
+            startActivity(intent);
+        }
         if(v==newproduct){
             Intent intent=new Intent(getActivity(),NewProduct.class);
             startActivity(intent);
@@ -373,57 +395,6 @@ public class HomePage extends Fragment implements View.OnClickListener, Fragment
             startActivity(intent);
         }
     }
-
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        userVisibleController.activityCreated();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        userVisibleController.resume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        userVisibleController.pause();
-    }
-
-    @Override
-    public void setUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-        userVisibleController.setUserVisibleHint(isVisibleToUser);
-    }
-
-    @Override
-    public void setWaitingShowToUser(boolean waitingShowToUser) {
-        userVisibleController.setWaitingShowToUser(waitingShowToUser);
-    }
-
-    @Override
-    public boolean isWaitingShowToUser() {
-        return userVisibleController.isWaitingShowToUser();
-    }
-
-    @Override
-    public boolean isVisibleToUser() {
-        return userVisibleController.isVisibleToUser();
-    }
-
-    @Override
-    public void callSuperSetUserVisibleHint(boolean isVisibleToUser) {
-        super.setUserVisibleHint(isVisibleToUser);
-    }
-
-    @Override
-    public void onVisibleToUserChanged(boolean isVisibleToUser, boolean invokeInResumeOrPause) {
-
-
-    }
-
     @SuppressLint("NewApi")
     @Override
     public void onHiddenChanged(boolean hidden) {

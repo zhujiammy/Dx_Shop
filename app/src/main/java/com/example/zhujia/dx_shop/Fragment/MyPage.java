@@ -194,7 +194,7 @@ public class MyPage extends Fragment implements View.OnClickListener {
             //查看更多订单
             if(LoginState.equals("yes")){
                 intent=new Intent(getActivity(),MyOrderActivity.class);
-                intent.putExtra("orderstatue","all");
+                intent.putExtra("orderstatue","0");
                 startActivity(intent);
             }else {
                 Intent intent=new Intent(getActivity(),LoginActivity.class);

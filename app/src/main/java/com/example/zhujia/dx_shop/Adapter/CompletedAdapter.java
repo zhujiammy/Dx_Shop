@@ -54,6 +54,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -148,7 +149,7 @@ public class CompletedAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Ba
     public void onBindViewHolder(BaseRecyclerViewHolder holder, final int position) {
         if (type==0){
             final CompletedAdapter.LinearViewHolder linearViewHolder= (CompletedAdapter.LinearViewHolder) holder;
-            linearViewHolder.productFee.setText("合计:"+new DecimalFormat("0.00").format(datas.get(position).getOrderTotalFee()));
+            linearViewHolder.productFee.setText("合计:¥"+new DecimalFormat("0.00").format(datas.get(position).getOrderTotalFee()));
             linearViewHolder.orderNo.setText("订单编号:"+datas.get(position).getOrderNo());
             linearViewHolder.itemView.setTag(position);
             linearViewHolder.lin_btn.setOnClickListener(new View.OnClickListener() {
@@ -182,11 +183,12 @@ public class CompletedAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Ba
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
-                    int price = (new Double(number)).intValue();
+                    BigDecimal b =new BigDecimal(number);
+                    double f1=b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                    productFee.setText("¥"+new DecimalFormat("0.00").format(f1));
 
                     productTitle.setText(object.getString("productTitle"));
                     quantity.setText("X"+object.getString("quantity"));
-                    productFee.setText("¥"+new DecimalFormat("0.00").format(price));
                     productAttrs.setText(object.getString("productAttrs"));
                     Glide.with(context).load(Constant.loadimag+object.getString("productItemImg")).into(productItemImg);
                     num++;

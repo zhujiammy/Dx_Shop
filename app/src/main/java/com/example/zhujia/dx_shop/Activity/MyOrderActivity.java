@@ -49,6 +49,11 @@ public class MyOrderActivity extends AppCompatActivity {
             }
         });
         initUI();
+        if(intent.getStringExtra("orderstatue")!=null){
+            int i= Integer.parseInt(intent.getStringExtra("orderstatue"));
+            select(i);
+        }
+
     }
 
 
@@ -164,26 +169,7 @@ public class MyOrderActivity extends AppCompatActivity {
         transaction.commit();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if(intent.getStringExtra("intentstatus")!=null){
-            mTabLayout.getTabAt(0).select();
-        }
-        if(intent.getStringExtra("orderstatue").equals("all")){
-            mTabLayout.getTabAt(0).select();
-        }
-        if(intent.getStringExtra("orderstatue").equals("01")){
-            mTabLayout.getTabAt(1).select();
-        }
-        if(intent.getStringExtra("orderstatue").equals("02")){
-            mTabLayout.getTabAt(2).select();
-        }
-        if(intent.getStringExtra("orderstatue").equals("03")){
-            mTabLayout.getTabAt(3).select();
-        }
-        if(intent.getStringExtra("orderstatue").equals("04")){
-            mTabLayout.getTabAt(4).select();
-        }
-    }
+  public void select(int i){
+      mTabLayout.getTabAt(i).select();
+  }
 }

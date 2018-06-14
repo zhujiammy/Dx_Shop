@@ -77,6 +77,9 @@ dependencies {
     compile 'com.github.linger1216:labelview:v1.1.2'
     compile 'com.github.shts:TriangleLabelView:1.1.2'
     compile 'com.android.support:multidex:1.0.0'
+    compile project(':searchview')
+    compile 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+
 
 
 

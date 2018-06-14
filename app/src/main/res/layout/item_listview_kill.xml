@@ -20,7 +20,7 @@
             android:id="@+id/lin_btn"
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="150dp">
 
             <!--     <ImageView
                      android:padding="5dp"
@@ -29,6 +29,7 @@
                      android:layout_width="130dp"
                      android:layout_height="130dp" />-->
             <com.lid.lib.LabelImageView
+                android:layout_gravity="center"
                 android:padding="5dp"
                 android:src="@mipmap/mrt"
                 android:id="@+id/model_img"
@@ -48,7 +49,7 @@
                     android:textColor="@color/BLAK"
                     android:layout_marginLeft="5dp"
                     android:layout_marginTop="3dp"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="OH/RZ201"
                     />
@@ -70,7 +71,7 @@
                     <TextView
                         android:id="@+id/crushsale_price"
                         android:gravity="center_vertical"
-                        android:textSize="23sp"
+                        android:textSize="18sp"
                         android:layout_marginLeft="5dp"
                         android:textColor="@color/del_color"
                         android:layout_width="wrap_content"
@@ -126,7 +127,7 @@
                         <TextView
                             android:id="@+id/time"
                             android:gravity="center_vertical"
-                            android:textSize="15sp"
+                            android:textSize="10sp"
                             android:layout_marginLeft="5dp"
                             android:textColor="@color/del_color"
                             android:layout_width="100dp"

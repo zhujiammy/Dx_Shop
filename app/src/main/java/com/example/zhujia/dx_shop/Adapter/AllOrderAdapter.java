@@ -50,7 +50,9 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -144,7 +146,7 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
     public void onBindViewHolder(BaseRecyclerViewHolder holder, final int position) {
         if (type==0){
             final AllOrderAdapter.LinearViewHolder linearViewHolder= (AllOrderAdapter.LinearViewHolder) holder;
-            linearViewHolder.productFee.setText("合计:"+new DecimalFormat("0.00").format(datas.get(position).getOrderTotalFee()));
+            linearViewHolder.productFee.setText("合计:¥"+new DecimalFormat("0.00").format(datas.get(position).getOrderTotalFee()));
             linearViewHolder.orderNo.setText("订单编号:"+datas.get(position).getOrderNo());
             linearViewHolder.itemView.setTag(position);
             linearViewHolder.lin_btn.setOnClickListener(new View.OnClickListener() {
@@ -178,11 +180,11 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
-                    int price = (new Double(number)).intValue();
-
+                    BigDecimal b =new BigDecimal(number);
+                    double f1=b.setScale(2,BigDecimal.ROUND_HALF_UP).doubleValue();
+                    productFee.setText("¥"+new DecimalFormat("0.00").format(f1));
                     productTitle.setText(object.getString("productTitle"));
                     quantity.setText("X"+object.getString("quantity"));
-                    productFee.setText("¥"+new DecimalFormat("0.00").format(price));
                     productAttrs.setText(object.getString("productAttrs"));
                     Glide.with(context).load(Constant.loadimag+object.getString("productItemImg")).into(productItemImg);
                     num++;
@@ -208,11 +210,70 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
                             linearViewHolder.orderstatu.setText(orderStatuses.get(j).getText());
                         }
                     }
+
+                    if(datas.get(position).getOrderStatus().equals("01")){
+                        linearViewHolder.pay.setVisibility(View.VISIBLE);
+                        linearViewHolder.cancel_order.setVisibility(View.VISIBLE);
+                        linearViewHolder.ok_order.setVisibility(View.GONE);
+                    }
+                    if(datas.get(position).getOrderStatus().equals("02")){
+                        linearViewHolder.pay.setVisibility(View.GONE);
+                        linearViewHolder.cancel_order.setVisibility(View.VISIBLE);
+                        linearViewHolder.ok_order.setVisibility(View.GONE);
+                    }
+                    if(datas.get(position).getOrderStatus().equals("05")){
+                        linearViewHolder.pay.setVisibility(View.GONE);
+                        linearViewHolder.cancel_order.setVisibility(View.VISIBLE);
+                        linearViewHolder.ok_order.setVisibility(View.GONE);
+                    }
+                    if(datas.get(position).getOrderStatus().equals("03")){
+                        linearViewHolder.pay.setVisibility(View.GONE);
+                        linearViewHolder.cancel_order.setVisibility(View.GONE);
+                        linearViewHolder.ok_order.setVisibility(View.GONE);
+
+                    }
+
+                    if(datas.get(position).getOrderStatus().equals("04")||datas.get(position).getOrderStatus().equals("07")){
+                        linearViewHolder.pay.setVisibility(View.GONE);
+                        linearViewHolder.cancel_order.setVisibility(View.GONE);
+                        linearViewHolder.ok_order.setVisibility(View.GONE);
+                    }
+                    if(datas.get(position).getOrderStatus().equals("06")){
+                        linearViewHolder.ok_order.setVisibility(View.VISIBLE);
+
+                    }
                 }
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+
+            linearViewHolder.pay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.pay(datas.get(position).getOrderNo());
+                }
+            });
+
+            linearViewHolder.cancel_order.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.cancelorder(datas.get(position).getOrderNo());
+                }
+            });
+
+            linearViewHolder.ok_order.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.okorder(datas.get(position).getOrderNo());
+                }
+            });
+
+
+
+
+
 
         }
     }
@@ -226,7 +287,8 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
     public static class LinearViewHolder extends BaseRecyclerViewHolder {
 
         private TextView num,productFee,orderNo,orderstatu;
-        private LinearLayout order_view,lin_btn;
+        private LinearLayout order_view,lin_btn,buttons;
+        private Button pay,cancel_order,ok_order;
         public LinearViewHolder(View itemView) {
             super(itemView);
             num=(TextView)itemView.findViewById(R.id.num);
@@ -235,6 +297,10 @@ public class AllOrderAdapter extends BaseRecyclerAdapter<BaseRecyclerAdapter.Bas
             order_view=(LinearLayout)itemView.findViewById(R.id.order_view);
             orderstatu=(TextView)itemView.findViewById(R.id.orderstatu);
             lin_btn=(LinearLayout)itemView.findViewById(R.id.lin_btn);
+            pay=(Button)itemView.findViewById(R.id.pay);
+            cancel_order=(Button)itemView.findViewById(R.id.cancel_order);
+            ok_order=(Button)itemView.findViewById(R.id.ok_order);
+
 
 
         }

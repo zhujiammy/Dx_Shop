@@ -56,6 +56,7 @@
             android:layout_height="2dp"/>
 
         <LinearLayout
+            android:id="@+id/wxpay"
             android:background="@color/white"
             android:layout_marginTop="2dp"
             android:layout_width="match_parent"

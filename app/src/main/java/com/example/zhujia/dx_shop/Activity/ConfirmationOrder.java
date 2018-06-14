@@ -26,6 +26,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -38,8 +40,10 @@ import com.alipay.sdk.app.PayTask;
 import com.bumptech.glide.Glide;
 import com.example.zhujia.dx_shop.MainActivity;
 import com.example.zhujia.dx_shop.R;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.util.OrderInfoUtil2_0;
 import com.example.zhujia.dx_shop.util.PayResult;
 import com.hmy.popwindow.PopWindow;
@@ -66,8 +70,10 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
     private View customView;
     private View rootview;
     private SharedPreferences sharedPreferences;
-    private LinearLayout select_address,lin_group,confirm,alipay;
+    private LinearLayout select_address,lin_group,confirm,alipay,wxpay;
     private ImageView close_pop;
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
     private TextView shouhuoren,shouhuorendizhi,zongjiprice,prdouct_num,heji;
     private String couponCode,promotionTitle,productType,image,quantity,salePrice,id,productName,productAttr,totals,addressId,person,phone,address,orderNo;
 
@@ -135,6 +141,8 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
         customView = View.inflate(getApplicationContext(), R.layout.paytype, null);
         alipay=(LinearLayout)customView.findViewById(R.id.alipay);
         alipay.setOnClickListener(this);
+        wxpay=(LinearLayout)customView.findViewById(R.id.wxpay);
+        wxpay.setOnClickListener(this);
         close_pop=(ImageView)customView.findViewById(R.id.close_pop);
         close_pop.setOnClickListener(this);
         int width = getResources().getDisplayMetrics().widthPixels;
@@ -515,6 +523,8 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
 
         if(v==alipay){
             //支付宝支付
+            dialog1=new LoadingAlertDialog(ConfirmationOrder.this);
+            dialog1.show("请稍等...");
             new HttpUtils().Post(Constant.APPURLS+"order/alipay/"+orderNo,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
 
                 @Override
@@ -524,6 +534,25 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
 
                     Message msg= Message.obtain(
                             mHandler,2,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
+
+            });
+        }
+        if(v==wxpay){
+            //微信支付
+            dialog1=new LoadingAlertDialog(ConfirmationOrder.this);
+            dialog1.show("请稍等...");
+            new HttpUtils().GetOrderStatu(Constant.APPURLS+"order/weixin/h5/"+orderNo,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+
+                    Message msg= Message.obtain(
+                            mHandler,4,data
                     );
                     mHandler.sendMessage(msg);
                 }
@@ -548,35 +577,43 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
         }
         if(v==confirm){
             //提交订单
-            Log.e("TAG", "onClick: "+TOKEN+"  "+loginUserId);
-            try {
-                String [] stringArr= id.split(",");
-                JSONArray j=new JSONArray(stringArr);
-                JSONObject object = new JSONObject();
-                object.put("addressId",addressId);
-                object.put("productItemIds",j);
-                object.put("couponCode",couponCode);
+            dialog1=new LoadingAlertDialog(ConfirmationOrder.this);
+            dialog1.show("请稍等...");
+            if(netWorkUtils.isNetworkConnected(ConfirmationOrder.this)){
+                Log.e("TAG", "onClick: "+TOKEN+"  "+loginUserId);
+                try {
+                    String [] stringArr= id.split(",");
+                    JSONArray j=new JSONArray(stringArr);
+                    JSONObject object = new JSONObject();
+                    object.put("addressId",addressId);
+                    object.put("productItemIds",j);
+                    object.put("couponCode",couponCode);
                     final String params=object.toString().replaceAll( "\\\\","").replace(" ", "");
-                Log.e("TAG", "addressId: "+params);
-                //新增
-                new HttpUtils().postJson(Constant.APPURLS+"order/shopping/confirm",params,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
-                    @Override
-                    public void onSuccess(String data) {
-                        // TODO Auto-generated method stub
-                        com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Log.e("TAG", "addressId: "+params);
+                    //新增
+                    new HttpUtils().postJson(Constant.APPURLS+"order/shopping/confirm",params,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+                        @Override
+                        public void onSuccess(String data) {
+                            // TODO Auto-generated method stub
+                            com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
 
-                        Message msg= Message.obtain(
-                                mHandler,1,data
-                        );
-                        mHandler.sendMessage(msg);
-                    }
+                            Message msg= Message.obtain(
+                                    mHandler,1,data
+                            );
+                            mHandler.sendMessage(msg);
+                        }
 
-                });
+                    });
 
 
-            }catch (JSONException e){
-                e.printStackTrace();
+                }catch (JSONException e){
+                    e.printStackTrace();
+                }
+            }else {
+                dialog1.dismiss();
+                Toast.makeText(ConfirmationOrder.this,"当前无网络连接",Toast.LENGTH_SHORT).show();
             }
+
 
 
         }
@@ -597,6 +634,7 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
                     case 1:
                         JSONObject object=new JSONObject(msg.obj.toString());
                         if(object.getString("code").equals("200")){
+                            dialog1.dismiss();
                             intentstatus="flag";
                             orderNo=object.getString("msg");
                             popWindow.showAtLocation(rootview, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
@@ -625,6 +663,8 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
 
                         Thread payThread = new Thread(payRunnable);
                         payThread.start();
+                        dialog1.dismiss();
+                        popWindow.dismiss();
                         break;
 
                     case SDK_PAY_FLAG: {
@@ -654,6 +694,30 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
                         break;
 
                     }
+                    case 4:
+                        Log.e("TAG", "handleMessage: "+msg.obj.toString());
+                        JSONObject object1=new JSONObject(msg.obj.toString());
+                        if(object1.getString("code").equals("200")){
+                            dialog1.dismiss();
+                            popWindow.dismiss();
+                            intent=new Intent(getApplicationContext(),WxpayActivity.class);
+                            intent.putExtra("msg",object1.getString("msg"));
+                            startActivity(intent);
+                        }
+
+                        break;
+
+                    case 8:
+                        Log.e("TAG", "handleMessage: "+msg.obj.toString());
+                        JSONObject object2=new JSONObject(msg.obj.toString());
+                        if(object2.getString("msg").equals("yes")){
+                           intent=new Intent(getApplicationContext(),OrderDetailsActivity.class);
+                            intent.putExtra("orderNo",orderNo);
+                           startActivity(intent);
+                           finish();
+                        }
+
+                        break;
 
                 }
             }catch (JSONException e){
@@ -680,5 +744,24 @@ public class ConfirmationOrder extends AppCompatActivity implements View.OnClick
         }
 
         return;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new HttpUtils().Post(Constant.APPURLS+"order/payment/check/"+orderNo,TOKEN,loginUserId,new HttpUtils.HttpCallback() {
+
+            @Override
+            public void onSuccess(String data) {
+                // TODO Auto-generated method stub
+                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+
+                Message msg= Message.obtain(
+                        mHandler,8,data
+                );
+                mHandler.sendMessage(msg);
+            }
+
+        });
     }
 }

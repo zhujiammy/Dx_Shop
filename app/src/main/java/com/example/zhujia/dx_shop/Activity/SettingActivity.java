@@ -58,6 +58,7 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
     private SharedPreferences sharedPreferences;
     private String LoginState,TOKEN,loginUserId;
     private TextView login_out_btn;
+    private TextView Accountsecurity;
 
 
     @SuppressLint("WrongConstant")
@@ -101,6 +102,8 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         address_tx.setOnClickListener(this);
         login_out_btn=(TextView)findViewById(R.id.login_out_btn);
         login_out_btn.setOnClickListener(this);
+        Accountsecurity=(TextView)findViewById(R.id.Accountsecurity);
+        Accountsecurity.setOnClickListener(this);
 
 
     }
@@ -134,6 +137,11 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         if(v==accout_setting){
 
             intent=new Intent(getApplicationContext(),PersonalInfoActivity.class);
+            startActivity(intent);
+        }
+
+        if(v==Accountsecurity){
+            intent=new Intent(getApplicationContext(),AccountsecurityActivity.class);
             startActivity(intent);
         }
 

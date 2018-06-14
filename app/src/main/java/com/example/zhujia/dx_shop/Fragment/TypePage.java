@@ -14,7 +14,9 @@ import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
@@ -30,14 +32,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.example.zhujia.dx_shop.Activity.NewProduct;
 import com.example.zhujia.dx_shop.Activity.ProductDetailsActivity;
+import com.example.zhujia.dx_shop.Activity.SearchActivity;
+import com.example.zhujia.dx_shop.Activity.SearchProduct;
 import com.example.zhujia.dx_shop.Adapter.AddressManagementAdapter;
 import com.example.zhujia.dx_shop.Adapter.GoodsListRecyclerViewAdapter;
 import com.example.zhujia.dx_shop.Data.Data;
@@ -57,6 +64,7 @@ import com.example.zhujia.dx_shop.Tools.WorksSizeCheckUtil;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,10 +92,15 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
     private  int total;
     private SuperRefreshRecyclerView recyclerView;
     private boolean flag=false;
+    private TextView shaixuan;
     private int goodsType=0;
+    private LinearLayout layout_search;
+    private DrawerLayout mDrawerLayout;
+    private FrameLayout mDrawerContent;
     private ImageView ivGoodsType;
     private GoodsListRecyclerViewAdapter adapter;
     private ImageView ivStick;//置顶
+    private String catalog,type,series,brand;
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -99,13 +112,39 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
         TOKEN=sharedPreferences.getString("token","");
         loginUserId=sharedPreferences.getString("userId","");
         initUI();
+        Bundle bundle=getArguments();
+        if(bundle!=null){
+            this.catalog=bundle.getString("catalogs");
+            this.type=bundle.getString("types");
+            this.series=bundle.getString("seriess");
+            this.brand=bundle.getString("brands");
+        }else {
+            this.catalog="";
+            this.type="";
+            this.series="";
+            this.brand="";
+        }
+
         loaddata();//加载列表数据
         adapter=new GoodsListRecyclerViewAdapter(getData(),getActivity());
+
         return view;
+    }
+
+    public void file(String catalog,String type,String series,String brand,Context context){
+        this.catalog=catalog;
+        this.type=type;
+        this.series=series;
+        this.brand=brand;
+        loaddata();//加载列表数据
+        adapter=new GoodsListRecyclerViewAdapter(getData(),context);
+
     }
 
     private void initUI(){
         //初始化
+        layout_search=(LinearLayout)view.findViewById(R.id.layout_search);
+        layout_search.setOnClickListener(this);
         recyclerView= (SuperRefreshRecyclerView)view.findViewById(R.id.recyclerview);
         recyclerView.inits(new LinearLayoutManager(getActivity()),this,this);
         recyclerView.setRefreshEnabled(true);
@@ -115,6 +154,8 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
         ivGoodsType.setOnClickListener(this);
         ivStick= (ImageView)view.findViewById(R.id.iv_stick);
         ivStick.setOnClickListener(this);
+        shaixuan=(TextView)view.findViewById(R.id.shaixuan);
+        shaixuan.setOnClickListener(this);
         if(goodsType!=0){
             DividerItemDecoration divider = new DividerItemDecoration(getActivity(),DividerItemDecoration.VERTICAL);
             divider.setDrawable(ContextCompat.getDrawable(getActivity(),R.drawable.reccyclerviewf));
@@ -140,15 +181,20 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
                 }
             }
         });
+        mDrawerLayout = (DrawerLayout) view.findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+        mDrawerContent = (FrameLayout) view.findViewById(R.id.drawer_content);
+        Fragment fragment = new FilterFragment();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.beginTransaction().replace(R.id.drawer_content,fragment).commit();
     }
 
 
 
 
-
-
     private void loaddata(){
-        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow=0&pageSize=20",new HttpUtils.HttpCallback() {
+        Log.e("TAG", "loaddata: "+catalog+type+series+brand );
+        new HttpUtils().Get(Constant.APPURLS+"product/search?catalog="+catalog+"&type="+type+"&series="+series+"&brand="+brand+"&startRow=0&pageSize=20",new HttpUtils.HttpCallback() {
             @Override
             public void onSuccess(String data) {
                 // TODO Auto-generated method stub
@@ -171,7 +217,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
     //加载更多
     private void initItemMoreData() {
 
-        new HttpUtils().Get(Constant.APPURLS+"product/search?startRow="+total+"&pageSize=20",new HttpUtils.HttpCallback() {
+        new HttpUtils().Get(Constant.APPURLS+"product/search?catalog="+catalog+"&type="+type+"&series="+series+"&brand="+brand+"startRow="+total+"&pageSize=20",new HttpUtils.HttpCallback() {
             @Override
             public void onSuccess(String data) {
                 // TODO Auto-generated method stub
@@ -223,6 +269,7 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
         if (hidden) {
             //相当于Fragment的onPause
             Log.e("TAG", "onHiddenChanged: "+"产品列表不可见" );
+            mDrawerLayout.closeDrawer(mDrawerContent);
         } else {
             // 相当于Fragment的onResume
             Log.e("TAG", "onHiddenChanged: "+"产品列表可见" );
@@ -361,6 +408,14 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
             case R.id.iv_stick://置顶
                 recyclerView.scrollToPosition(0);
                 break;
+            case R.id.layout_search:
+                Intent intent=new Intent(getActivity(),SearchActivity.class);
+                startActivity(intent);
+                break;
+            case R.id.shaixuan:
+                //筛选
+                mDrawerLayout.openDrawer(mDrawerContent);
+                break;
 
         }
     }
@@ -396,6 +451,10 @@ public class TypePage extends Fragment implements View.OnClickListener ,OnRefres
             public void run() {
                 mListData.clear();
                 adapter.notifyDataSetChanged();
+                catalog="";
+                type="";
+                series="";
+                brand="";
                 loaddata();
             }
         },1000);

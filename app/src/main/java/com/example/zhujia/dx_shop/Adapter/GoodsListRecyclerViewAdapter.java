@@ -119,12 +119,8 @@ public class GoodsListRecyclerViewAdapter extends BaseRecyclerAdapter<BaseRecycl
     public void onBindViewHolder(BaseRecyclerViewHolder holder, final int position) {
         if (viewType==0){
             LinearViewHolder linearViewHolder= (LinearViewHolder) holder;
-            if(!data.get(position).getModel_img().equals("")){
-                Glide.with(context).load(Constant.loadimag+data.get(position).getModel_img()).into(linearViewHolder.model_img);
-            }else {
-                linearViewHolder.model_img.setImageDrawable(context.getResources().getDrawable(R.mipmap.mrt));
-            }
 
+            Glide.with(context).load(Constant.loadimag+data.get(position).getModel_img()).into(linearViewHolder.model_img);
                 if(!data.get(position).getPromotionTitle().equals("null")){
                     linearViewHolder.label.setText(data.get(position).getPromotionTitle());
                     linearViewHolder.label.setVisibility(View.VISIBLE);
@@ -142,11 +138,7 @@ public class GoodsListRecyclerViewAdapter extends BaseRecyclerAdapter<BaseRecycl
         }else {
             GridViewHolder gridViewHolder= (GridViewHolder) holder;
             gridViewHolder.itemView.setTag(position);
-            if(!data.get(position).getModel_img().equals("")){
-                Glide.with(context).load(Constant.loadimag+data.get(position).getModel_img()).into(gridViewHolder.model_img);
-            }else {
-                gridViewHolder.model_img.setImageDrawable(context.getResources().getDrawable(R.mipmap.mrt));
-            }
+            Glide.with(context).load(Constant.loadimag+data.get(position).getModel_img()).into(gridViewHolder.model_img);
             LabelView label = new LabelView(context);
 
             if(!data.get(position).getPromotionTitle().equals("null")){

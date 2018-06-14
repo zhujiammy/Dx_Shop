@@ -681,14 +681,17 @@ public class HttpUtils{
             Log.d(TAG, params);
             try {
                 JSONObject object=new JSONObject(params);
-                if(object.getString("code").equals("401")){
-                    Looper.prepare();
-                    Toast.makeText(mContext,object.getString("msg"),Toast.LENGTH_SHORT).show();
-                    Intent intent=new Intent(mContext, LoginActivity.class);
-                    intent.putExtra("page","x");
-                    mContext.startActivity(intent);
-                    Looper.loop();
+                if(!object.isNull("code")){
+                    if(object.getString("code").equals("401")){
+                        Looper.prepare();
+                        Toast.makeText(mContext,object.getString("msg"),Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(mContext, LoginActivity.class);
+                        intent.putExtra("page","x");
+                        mContext.startActivity(intent);
+                        Looper.loop();
+                    }
                 }
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }

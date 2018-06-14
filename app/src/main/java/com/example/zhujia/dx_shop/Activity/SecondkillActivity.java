@@ -53,8 +53,10 @@ import com.example.zhujia.dx_shop.Tools.ClearEditText;
 import com.example.zhujia.dx_shop.Tools.CustomDialog;
 import com.example.zhujia.dx_shop.Tools.IEditTextChangeListener;
 import com.example.zhujia.dx_shop.Tools.ImageService;
+import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.Net.Constant;
 import com.example.zhujia.dx_shop.Tools.Net.HttpUtils;
+import com.example.zhujia.dx_shop.Tools.Net.NetWorkUtils;
 import com.example.zhujia.dx_shop.Tools.OnLoadMoreListener;
 import com.example.zhujia.dx_shop.Tools.OnRefreshListener;
 import com.example.zhujia.dx_shop.Tools.SuperRefreshRecyclerView;
@@ -96,6 +98,8 @@ public class SecondkillActivity extends AppCompatActivity implements View.OnClic
     private ImageView ivGoodsType;
     private SecondkillAdapter adapter;
     private ImageView ivStick;//置顶
+    LoadingAlertDialog dialog1;
+    private NetWorkUtils netWorkUtils;//网络状态
 
     @SuppressLint("WrongConstant")
     @Nullable
@@ -169,23 +173,31 @@ public class SecondkillActivity extends AppCompatActivity implements View.OnClic
 
 
     private void loaddata(){
-        new HttpUtils().Get(Constant.APPURLS+"promotion/crush",new HttpUtils.HttpCallback() {
-            @Override
-            public void onSuccess(String data) {
-                // TODO Auto-generated method stub
-                com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
-                Message msg= Message.obtain(
-                        mHandler,0,data
-                );
-                mHandler.sendMessage(msg);
-            }
+        dialog1=new LoadingAlertDialog(SecondkillActivity.this);
+        dialog1.show("加载中");
+        if(netWorkUtils.isNetworkConnected(SecondkillActivity.this)){
+            new HttpUtils().Get(Constant.APPURLS+"promotion/crush",new HttpUtils.HttpCallback() {
+                @Override
+                public void onSuccess(String data) {
+                    // TODO Auto-generated method stub
+                    com.example.zhujia.dx_shop.Tools.Log.printJson("tag",data,"header");
+                    Message msg= Message.obtain(
+                            mHandler,0,data
+                    );
+                    mHandler.sendMessage(msg);
+                }
 
-            @Override
-            public void onError(String msg) {
-                Log.e("TAG", "onError: "+msg );
-            }
+                @Override
+                public void onError(String msg) {
+                    Log.e("TAG", "onError: "+msg );
+                }
 
-        });
+            });
+        }else {
+            dialog1.dismiss();
+            Toast.makeText(SecondkillActivity.this,"当前无网络连接",Toast.LENGTH_SHORT).show();
+        }
+
 
 
     }
@@ -223,7 +235,7 @@ public class SecondkillActivity extends AppCompatActivity implements View.OnClic
                                     }
                                 });
                             }
-
+                            dialog1.dismiss();
                             break;
 
 
