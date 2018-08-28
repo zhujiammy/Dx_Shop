@@ -334,6 +334,23 @@
                     />
 
             </RelativeLayout>
+            <RelativeLayout
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="30dp">
+
+                <Button
+                    android:id="@+id/refund_btn"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/border_line_blak"
+                    android:textColor="@color/monsoon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:text="申请退款"
+                    android:layout_margin="3dp"
+                    />
+
+            </RelativeLayout>
 
             <View
                 android:background="@color/def_bg"

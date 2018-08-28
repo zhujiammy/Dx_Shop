@@ -70,17 +70,7 @@
                         android:layout_marginLeft="10dp"
                         android:text="登录/注册"
                         />
-                    <TextView
-                        android:gravity="center"
-                        android:background="@drawable/textstyle"
-                        android:id="@+id/label"
-                        android:layout_centerVertical="true"
-                        android:textColor="@color/white"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:text="VIP用户"
-                        />
+
                 </LinearLayout>
 
                 <RelativeLayout
@@ -239,25 +229,25 @@
                         android:text="已完成"
                         />
                 </LinearLayout>
-            <!--    <LinearLayout
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:layout_weight="1"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <ImageView
-                        android:src="@mipmap/sh"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        />
+                <!--    <LinearLayout
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent">
+                        <ImageView
+                            android:src="@mipmap/sh"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            />
 
-                    <TextView
-                        android:layout_marginTop="5dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="售后"
-                        />
-                </LinearLayout>-->
+                        <TextView
+                            android:layout_marginTop="5dp"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="售后"
+                            />
+                    </LinearLayout>-->
 
             </LinearLayout>
 

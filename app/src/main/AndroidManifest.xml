@@ -70,10 +70,12 @@
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustNothing"
             android:theme="@style/AppTheme1">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        </activity>
 
-                <category android:name="android.intent.category.LAUNCHER" />
+        <activity android:name=".Activity.AppStaractivity"  android:theme="@style/AppTheme1">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
         <activity
@@ -155,6 +157,12 @@
         <activity
             android:screenOrientation="portrait"
             android:name=".Activity.MyOrderActivity"
+            android:theme="@style/AppTheme1">
+
+        </activity>
+        <activity
+            android:screenOrientation="portrait"
+            android:name=".Activity.RefundActivity"
             android:theme="@style/AppTheme1">
 
         </activity>

@@ -217,6 +217,15 @@ public class SecondkillActivity extends AppCompatActivity implements View.OnClic
                             mListData.clear();
                             if(reslutJSONObject.getString("code").equals("404")){
                                 recyclerView.setRefreshing(false);
+                                dialog1.dismiss();
+                                View  emtview=View.inflate(getApplicationContext(),R.layout.emtviews,null);
+                                recyclerView.setEmptyView(emtview);
+                                recyclerView.showEmpty(new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+
+                                    }
+                                });
                             }else {
                                 contentjsonarry=reslutJSONObject.getJSONArray("object");
                                 fillDataToList(contentjsonarry);
@@ -234,8 +243,9 @@ public class SecondkillActivity extends AppCompatActivity implements View.OnClic
                                         startActivity(intent);
                                     }
                                 });
+                                dialog1.dismiss();
                             }
-                            dialog1.dismiss();
+
                             break;
 
 

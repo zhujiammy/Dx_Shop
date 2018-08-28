@@ -60,7 +60,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements View.OnCl
     private String orderNostr;
     public static final int  INTENT=1004;
     private String LoginState,TOKEN,loginUserId,status;
-    private Button pay,cancel_order,ok_order,invoice_btn;
+    private Button pay,cancel_order,ok_order,invoice_btn,refund_btn;
     private TextView orderStatus,receiverName,titles,copy_btn,copy_btn1,receiverAddress,createTime,orderNo,orderTotalFee,productFee,productFees,logistics,expressno,deliverTime;
     private LinearLayout lin_group;
     private ImageView close_pop;
@@ -121,6 +121,7 @@ public class OrderDetailsActivity extends AppCompatActivity implements View.OnCl
 
 
 
+
     }
 
     @Override
@@ -166,6 +167,8 @@ public class OrderDetailsActivity extends AppCompatActivity implements View.OnCl
         ok_order.setOnClickListener(this);
         invoice_btn=(Button)findViewById(R.id.invoice_btn);
         invoice_btn.setOnClickListener(this);
+        refund_btn=(Button)findViewById(R.id.refund_btn);
+        refund_btn.setOnClickListener(this);
         pay=(Button)findViewById(R.id.pay);
         pay.setOnClickListener(this);
         copy_btn=(TextView)findViewById(R.id.copy_btn);
@@ -234,7 +237,6 @@ public class OrderDetailsActivity extends AppCompatActivity implements View.OnCl
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             try {
-
                 switch (msg.what){
                     case 1:
                         JSONObject object=new JSONObject(msg.obj.toString());
@@ -639,6 +641,13 @@ public class OrderDetailsActivity extends AppCompatActivity implements View.OnCl
             intent=new Intent(getApplicationContext(),InvoiceActivity.class);
             intent.putExtra("orderno",orderNostr);
             intent.putExtra("invoicestr",invoicestr);
+            startActivityForResult(intent,INTENT);
+        }
+
+        //申请退货
+        if(v==refund_btn){
+            intent=new Intent(getApplicationContext(),RefundActivity.class);
+            intent.putExtra("orderno",orderNostr);
             startActivityForResult(intent,INTENT);
         }
 

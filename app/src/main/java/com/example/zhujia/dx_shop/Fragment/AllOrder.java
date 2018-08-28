@@ -204,14 +204,25 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
                         case 0:
                             //返回item类型数据
                             reslutJSONObject=new JSONObject(msg.obj.toString());
-                            mListData.clear();
-                            fillDataToList(reslutJSONObject);
-                            recyclerView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-                            recyclerView.showData();
-                            recyclerView.setRefreshing(false);
-                            recyclerView.setLoadingMore(false);
-                            dialog1.dismiss();
+                            if(reslutJSONObject.getString("code").equals("404")){
+                                dialog1.dismiss();
+                                View  emtview=View.inflate(getContext(),R.layout.emtview,null);
+                                recyclerView.setEmptyView(emtview);
+                                recyclerView.showEmpty(new View.OnClickListener() {
+                                    public void onClick(View v) {
+
+                                    }
+                                });
+                            }else {
+                                mListData.clear();
+                                fillDataToList(reslutJSONObject);
+                                recyclerView.setAdapter(adapter);
+                                adapter.notifyDataSetChanged();
+                                recyclerView.showData();
+                                recyclerView.setRefreshing(false);
+                                recyclerView.setLoadingMore(false);
+                                dialog1.dismiss();
+                            }
                             break;
 
 
@@ -220,25 +231,19 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
                             if(header.getString("code").equals("200")){
                                 OrderStatus=header.getString("object");
                             }
-
                             break;
-
                         case 2:
                             Toast.makeText(getActivity(), "删除成功", Toast.LENGTH_SHORT).show();
                             break;
-
                         case 3:
                             Log.e("TAG", "handleMessage: "+msg.obj.toString());
                             final String orderInfo = msg.obj.toString();
-
                             Runnable payRunnable = new Runnable() {
-
                                 @Override
                                 public void run() {
                                     PayTask alipay = new PayTask(getActivity());
                                     Map<String, String> result = alipay.payV2(orderInfo, true);
                                     Log.i("msp", result.toString());
-
                                     Message msg = new Message();
                                     msg.what = SDK_PAY_FLAG;
                                     msg.obj = result;
@@ -304,7 +309,7 @@ public class AllOrder extends Fragment implements OnRefreshListener,OnLoadMoreLi
                             JSONObject object1=new JSONObject(msg.obj.toString());
                             if(object1.getString("code").equals("200")){
                                 dialog1.dismiss();
-                               Intent intent=new Intent(getActivity(),WxpayActivity.class);
+                                Intent intent=new Intent(getActivity(),WxpayActivity.class);
                                 intent.putExtra("msg",object1.getString("msg"));
                                 startActivity(intent);
                             }

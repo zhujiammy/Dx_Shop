@@ -609,7 +609,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                         //设置适配器
                         view_pager.setAdapter(viewAdapter);
                         ProductItemList productItemList=null;
-                       JSONArray productItemListjsonarry=Jsonobject.getJSONArray("productItemList");
+                        JSONArray productItemListjsonarry=Jsonobject.getJSONArray("productItemList");
                         for(int d=0;d<productItemListjsonarry.length();d++){
                             productItemList=new ProductItemList();
                             JSONObject productitemobj=productItemListjsonarry.getJSONObject(d);
@@ -632,19 +632,19 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
 
                         InventoryList inventoryList=null;
 
-                            if(!Jsonobject.isNull("inventory")){
-                                JSONArray inventoryListsjsonarry=Jsonobject.getJSONArray("inventory");
-                                for(int i=0;i<inventoryListsjsonarry.length();i++){
-                                    inventoryList=new InventoryList();
-                                    JSONObject object=inventoryListsjsonarry.getJSONObject(i);
-                                    inventoryList.setProductItemId(object.getString("skuId"));
-                                    inventoryList.setQuantity(object.getString("quantity"));
-                                    inventoryList.setLockQuantity(object.getString("lockQuantity"));
-                                    inventoryLists.add(inventoryList);
-                                }
+                        if(!Jsonobject.isNull("inventory")){
+                            JSONArray inventoryListsjsonarry=Jsonobject.getJSONArray("inventory");
+                            for(int i=0;i<inventoryListsjsonarry.length();i++){
+                                inventoryList=new InventoryList();
+                                JSONObject object=inventoryListsjsonarry.getJSONObject(i);
+                                inventoryList.setProductItemId(object.getString("skuId"));
+                                inventoryList.setQuantity(object.getString("quantity"));
+                                inventoryList.setLockQuantity(object.getString("lockQuantity"));
+                                inventoryLists.add(inventoryList);
                             }
+                        }
                         ProductAttrList productAttrList=null;
-                         final JSONArray productAttrListjsonarray=Jsonobject.getJSONArray("productAttrList");
+                        final JSONArray productAttrListjsonarray=Jsonobject.getJSONArray("productAttrList");
                         MRadioButton radioButton = null;
                         int num=0;
                         final Map<String,String>map=new HashMap<>();
@@ -668,7 +668,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                             attrKey_tv.setText(attrKey.getCatalogAttrValue());
 
 
-                           AttrValues attrValue=null;
+                            AttrValues attrValue=null;
                             for(int c=0;c<attrvalue.length();c++){
                                 attrValue=new AttrValues();
                                 final JSONObject object2=attrvalue.getJSONObject(c);
@@ -691,6 +691,7 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                 radioButton.setButtonDrawable(null);
                                 radioButton.setGravity(Gravity.CENTER);
                                 radioButton.setId(num);
+                                // radioButton.setChecked(true);
                                 radioButton.setPadding(30,30,30,30);
                                 LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, 120);
                                 groupradion.addView(radioButton,lp);
@@ -710,11 +711,11 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                         }
 
                                         int kk=0;
-                                        int ii=0;
                                         StringBuffer buffer=new StringBuffer();
                                         StringBuffer buffer1=new StringBuffer();
 
-                                            map.put(String.valueOf(finalJ),finalAttrValue.getId());
+                                        map.put(String.valueOf(finalJ),finalAttrValue.getId());
+                                        map1.put(String.valueOf(finalJ),finalAttrValue.getModelAttrValue());
                                         if(map.size()==productAttrListjsonarray.length()){
                                             for (Map.Entry<String, String> entry : map.entrySet()) {
                                                 String key = entry.getKey();
@@ -730,85 +731,83 @@ public class GoodsInfoFragment extends Fragment implements View.OnClickListener,
                                                 kk++;
 
                                             }
-                                            Log.e("TAG", "onClick: "+buffer.toString() );
-                                            map1.put(String.valueOf(finalJ),finalAttrValue.getModelAttrValue());
+                                            Log.e("TAG","buffer:"+buffer.toString() );
+
                                             for (Map.Entry<String, String> entry : map1.entrySet()) {
                                                 String key = entry.getKey();
                                                 String value = entry.getValue();
 
-                                                if(ii==0){
+                                                if(kk==0){
                                                     buffer1.append(value);
                                                 }else {
                                                     buffer1.append(",").append(value);
                                                 }
-                                                ii++;
-
+                                                kk++;
                                             }
                                             tv_current_goods.setText("已选"+" "+buffer1.toString());
+                                            Log.e("TAG", "tv_current_goods: "+buffer1.toString());
 
 
-                                            Log.e("TAG", "onClick: "+productItemLists.size() );
+                                            Log.e("TAG", "productItemListssize: "+productItemLists.size() );
+                                            salePrice.setText("暂无此商品！");
+                                            itemNo.setText("");
+                                            kucun_tv.setText("");
+                                            add_carts.setEnabled(false);
+                                            add_carts.setText("暂无此商品！");
                                             for(int y=0;y<productItemLists.size();y++){
-                                                if((buffer.toString().equals(productItemLists.get(y).getProductModelAttrs()))){
-
+                                                Log.e("TAG", "getProductModelAttrs:"+productItemLists.get(y).getProductModelAttrs() );
+                                                if(buffer.toString().equals(productItemLists.get(y).getProductModelAttrs())){
                                                     Glide.with(getActivity()).load(Constant.loadimag+productItemLists.get(y).getListImg()).into(img);
                                                     String productId=productItemLists.get(y).getId();
                                                     salePrice.setText("¥"+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
                                                     itemNo.setText("商品编号:"+productItemLists.get(y).getItemNo());
-                                                    Log.e("TAG", "getListImg:"+productItemLists.get(y).getListImg());
-                                                    Log.e("TAG", "promotions:"+promotions.size());
-                                                    Log.e("TAG", "onClick: "+new DecimalFormat("0.00").format(productItemLists.get(y).getSalePrice()));
-                                                        if(promotions.size()==0){
-                                                            productItemId=productItemLists.get(y).getId();
-                                                        }else {
-                                                            for(int t=0;t<promotions.size();t++){
-                                                                if(productId.equals(promotions.get(t).getProductItemId())){
-                                                                    cuxiao.setText(promotions.get(t).getActivityName());
-                                                                    price.setText("¥"+promotions.get(t).getOnSalePrice());
-                                                                    salePrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG);
-                                                                   // Toast.makeText(getActivity(),promotions.get(t).getOnSalePrice(),Toast.LENGTH_SHORT).show();
-                                                                    productItemId=promotions.get(t).getProductItemId();
-                                                                }else {
-                                                                    productItemId=productItemLists.get(y).getId();
-                                                                    cuxiao.setText("");
-                                                                    price.setText("");
-                                                                    salePrice.getPaint().setFlags(0);
-                                                                }
+                                                    if(promotions.size()==0){
+                                                        productItemId=productItemLists.get(y).getId();
+                                                    }else {
+                                                        for(int t=0;t<promotions.size();t++){
+                                                            if(productId.equals(promotions.get(t).getProductItemId())){
+                                                                cuxiao.setText(promotions.get(t).getActivityName());
+                                                                price.setText("¥"+promotions.get(t).getOnSalePrice());
+                                                                salePrice.getPaint().setFlags(Paint. STRIKE_THRU_TEXT_FLAG);
+                                                                // Toast.makeText(getActivity(),promotions.get(t).getOnSalePrice(),Toast.LENGTH_SHORT).show();
+                                                                productItemId=promotions.get(t).getProductItemId();
+                                                            }else {
+                                                                productItemId=productItemLists.get(y).getId();
+                                                                cuxiao.setText("");
+                                                                price.setText("");
+                                                                salePrice.getPaint().setFlags(0);
                                                             }
                                                         }
-
-
+                                                    }
 
                                                     Log.e("TAG", "productItemId: "+productItemId );
-                                                        if(inventoryLists.size()!=0){
-                                                            for(int i=0;i<inventoryLists.size();i++){
-                                                                if(productItemId.equals(inventoryLists.get(i).getProductItemId())){
-                                                                    int quantity= Integer.parseInt(inventoryLists.get(i).getQuantity());
-                                                                    int LockQuantity= Integer.parseInt(inventoryLists.get(i).getLockQuantity());
-                                                                    int kucun=quantity-LockQuantity;
-                                                                    Log.e("库存", "onClick: "+kucun );
-                                                                    kucun_tv.setText("库存:"+kucun);
-                                                                    if(kucun==0){
-                                                                        add_carts.setEnabled(false);
-                                                                        add_carts.setText("暂时没有库存哦！");
-                                                                    }else {
-                                                                        add_carts.setEnabled(true);
-                                                                        add_carts.setText("加入购物车");
-                                                                    }
+                                                    Log.e("TAG", "inventoryLists: "+inventoryLists.size() );
+                                                    if(inventoryLists.size()!=0){
+                                                        for(int i=0;i<inventoryLists.size();i++){
+                                                            if(productItemId.equals(inventoryLists.get(i).getProductItemId())){
+                                                                int quantity= Integer.parseInt(inventoryLists.get(i).getQuantity());
+                                                                int LockQuantity= Integer.parseInt(inventoryLists.get(i).getLockQuantity());
+                                                                int kucun=quantity-LockQuantity;
+                                                                Log.e("库存", "onClick: "+kucun );
+                                                                kucun_tv.setText("库存:"+kucun);
+                                                                if(kucun==0){
+                                                                    add_carts.setEnabled(false);
+                                                                    add_carts.setText("暂时没有库存哦！");
+                                                                    kucun_tv.setText("库存:0");
+                                                                }else {
+                                                                    add_carts.setEnabled(true);
+                                                                    add_carts.setText("加入购物车");
                                                                 }
                                                             }
-                                                        }else {
-                                                            add_carts.setEnabled(false);
-                                                            add_carts.setText("暂时没有库存哦！");
                                                         }
-
-
+                                                    }else {
+                                                        add_carts.setEnabled(false);
+                                                        add_carts.setText("暂时没有库存哦！");
+                                                        kucun_tv.setText("库存:0");
+                                                    }
 
                                                 }
                                             }
-
-
-
 
                                         }
 

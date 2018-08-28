@@ -511,14 +511,14 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-             try {
+            try {
                 switch (msg.what){
                     case 1:
-                     JSONObject object=new JSONObject(msg.obj.toString());
-                     JSONObject jsonObject=object.getJSONObject("object");
-                     JSONObject productItem=jsonObject.getJSONObject("productItem");
-                     imgUrls=new ArrayList<>();
-                     imgUrls.add(Constant.loadimag+productItem.getString("listImg"));
+                        JSONObject object=new JSONObject(msg.obj.toString());
+                        JSONObject jsonObject=object.getJSONObject("object");
+                        JSONObject productItem=jsonObject.getJSONObject("productItem");
+                        imgUrls=new ArrayList<>();
+                        imgUrls.add(Constant.loadimag+productItem.getString("listImg"));
                         //设置图片加载器
                         banner.setImageLoader(new GlideImageLoader());
                         banner.setDelayTime(6000);
@@ -580,7 +580,6 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
                     case 2:
                         JSONObject jsonObject1=new JSONObject(msg.obj.toString());
                         if(jsonObject1.getString("code").equals("200")){
-                            dialog1.dismiss();
                             orderNo=jsonObject1.getString("object");
                             popWindow.showAtLocation(rootview, Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
                             backgroundAlpha(0.5f);
@@ -665,8 +664,6 @@ public class GoodsInfoFragmentKill extends Fragment implements View.OnClickListe
             Toast.makeText(getActivity(),"活动尚未开始！",Toast.LENGTH_SHORT).show();
         }else {
             //提交订单
-            dialog1=new LoadingAlertDialog(getActivity());
-            dialog1.show("请稍等...");
             Log.e("TAG", "onClick: "+TOKEN+"  "+loginUserId);
             try {
                 JSONObject object = new JSONObject();

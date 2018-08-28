@@ -198,6 +198,7 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
                             //返回item类型数据
                             reslutJSONObject=new JSONObject(msg.obj.toString());
                             if(reslutJSONObject.getString("code").equals("404")){
+                                dialog1.dismiss();
                                 View  emtview=View.inflate(getContext(),R.layout.emtview,null);
                                 recyclerView.setEmptyView(emtview);
                                 recyclerView.showEmpty(new View.OnClickListener() {
@@ -214,8 +215,9 @@ public class PendingDelivery extends Fragment implements OnRefreshListener,OnLoa
                                 recyclerView.showData();
                                 recyclerView.setRefreshing(false);
                                 recyclerView.setLoadingMore(false);
+                                dialog1.dismiss();
                             }
-                            dialog1.dismiss();
+
 
 
                             break;

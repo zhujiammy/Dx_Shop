@@ -47,6 +47,7 @@ import com.example.zhujia.dx_shop.Data.Data;
 import com.example.zhujia.dx_shop.R;
 import com.example.zhujia.dx_shop.Tools.FixedGridLayout;
 import com.example.zhujia.dx_shop.Tools.FragmentUserVisibleController;
+import com.example.zhujia.dx_shop.Tools.FullyGridLayoutManager;
 import com.example.zhujia.dx_shop.Tools.GlideImageLoader;
 import com.example.zhujia.dx_shop.Tools.LoadingAlertDialog;
 import com.example.zhujia.dx_shop.Tools.MaskableImageView;
@@ -83,7 +84,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
     private Banner banner;
     private ViewGroup.LayoutParams lp;
     private TextView MSG,QR;
-
     private Handler mHandler;
     private List<String>list;
     private MyScrollView scrolll;
@@ -106,8 +106,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
     private NetWorkUtils netWorkUtils;//网络状态
     private String flag="1";
 
-
-
     @SuppressLint("WrongConstant")
     @Nullable
     @Override
@@ -125,7 +123,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
             loaddata();//加载列表数据
             adapter=new HomeAdapter(getData(),getActivity());
         }
-
         return view;
     }
 
@@ -141,17 +138,15 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                     );
                     mHandler.sendMessage(msg);
                 }
-
                 @Override
                 public void onError(String msg) {
                     Log.e("TAG", "onError: "+msg );
                 }
 
             });
-        }else {
+        }else{
             Toast.makeText(getActivity(),"当前无网络连接",Toast.LENGTH_SHORT).show();
         }
-
     }
 
 
@@ -173,8 +168,7 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                                 JSONObject object1=objectarray.getJSONObject(i);
                                 list.add(Constant.loadimag+object1.getString("phoneUrl"));
                             }
-
-                            //设置图片加载器
+                            //设置图 片加载器
                             banner.setImageLoader(new GlideImageLoader());
                             banner.setDelayTime(3000);
                             //设置图片集合
@@ -182,7 +176,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                             //banner设置方法全部调用完毕时最后调用
                             banner.start();
                             break;
-
                         case 1:
                             flag="2";
                             ggw.removeAllViews();
@@ -195,7 +188,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                                 JSONObject object1=objectarrays.getJSONObject(i);
                                 JSONArray list=object1.getJSONArray("list");
                                 for(int j=0;j<list.length();j++){
-
                                     View viewd = View.inflate(getActivity(),R.layout.advertisement,null);
                                     final JSONObject object2=list.getJSONObject(j);
                                     float wei=object2.getInt("proportion");
@@ -205,7 +197,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                                     final String linkUrl=object2.getString("linkUrl");
                                     viewd.setLayoutParams(weight1);
                                     linearLayout.addView(viewd);
-
                                     imageView.setOnClickListener(new View.OnClickListener() {
                                         @Override
                                         public void onClick(View v) {
@@ -324,9 +315,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
         });
 
     }
-
-
-
     private void initUI(){
         scrolll=(MyScrollView)view.findViewById(R.id.scrolll);
         scrolll.setOnScrollListener(listener);
@@ -338,13 +326,13 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
         Secondkill=(ImageView)view.findViewById(R.id.Secondkill);
         Secondkill.setOnClickListener(this);
         banner = (Banner) view.findViewById(R.id.banner);
-       // lin_center=(LinearLayout)view.findViewById(R.id.lin_center);
+        // lin_center=(LinearLayout)view.findViewById(R.id.lin_center);
         ggw=(LinearLayout)view.findViewById(R.id.ggw);
         newproduct=(ImageView)view.findViewById(R.id.newproduct);
         newproduct.setOnClickListener(this);
         //初始化
         recyclerView= (SuperRefreshRecyclerView)view.findViewById(R.id.recyclerview);
-        recyclerView.inits(new GridLayoutManager(getActivity(),2),this,this);
+        recyclerView.initlay(new FullyGridLayoutManager(getActivity(),2),this,this);
         recyclerView.setRefreshEnabled(true);
         recyclerView.setLoadingMoreEnable(true);
         recyclerView.setHasFixedSize(true);
@@ -428,7 +416,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                 drawable = getResources().getDrawable(R.drawable.seach_w);
                 drawable.setBounds(0, 0, 40, 40);
                 seach_text.setCompoundDrawables(drawable,null,null,null);
-
                 drawableqr = getResources().getDrawable(R.mipmap.qrs);
                 drawableqr.setBounds(0, 0, 48, 48);
                 drawablemsg = getResources().getDrawable(R.mipmap.msgs);
@@ -438,8 +425,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
                 MSG.setTextColor(getActivity().getResources().getColor(R.color.monsoon));
                 MSG.setCompoundDrawables(null,drawablemsg,null,null);
             }
-
-
         }
     }
 
@@ -475,7 +460,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
     }
 
 
-
     //将像素转换为px
     public static int dip2px(Context context, float dpValue) {
         final float scale = context.getResources().getDisplayMetrics().density;
@@ -492,7 +476,6 @@ public class HomePage extends Fragment implements View.OnClickListener,OnRefresh
         @SuppressLint("NewApi")
         @Override
         public void onScroll(int scrollY) {
-
             int i=dip2px(getActivity(),scrollY);
             int dp=px2dp(getActivity(),i);
             if(dp>200){

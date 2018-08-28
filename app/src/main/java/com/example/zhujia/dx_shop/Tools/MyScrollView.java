@@ -4,9 +4,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.widget.ScrollView;
+import android.support.v4.widget.NestedScrollView;
 
-public class MyScrollView extends ScrollView {
+public class MyScrollView extends NestedScrollView {
 
     private int slop;
     private int touch;
